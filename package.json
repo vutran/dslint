@@ -10,21 +10,28 @@
     "clean": "rm -rf ./dist",
     "build": "tsc --outDir dist --rootDir src",
     "build-clean": "npm run clean && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest src/"
   },
   "author": "Vu Tran <vu@vu-tran.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^24.0.11",
     "@types/node": "^11.12.0",
     "husky": "^1.3.1",
+    "jest": "^24.5.0",
     "lint-staged": "^8.1.5",
     "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
     "typescript": "^3.3.4000"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   },
   "lint-staged": {
     "*.{ts,json,md}": [

@@ -19,3 +19,15 @@ export function getAllRules(rulesPaths: Array<string>): Array<RuleConstructor> {
 
   return rules;
 }
+
+interface ConnectedNode<T> {
+  parent?: T;
+}
+
+/**
+ * Recurses through all nodes in the given tree and assigns each child node with it's parent.
+ */
+export function connectNodes<T>(data: T): T & ConnectedNode<T> {
+  // TODO(vutran) - Implement
+  return data;
+}
