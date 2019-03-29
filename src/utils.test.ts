@@ -1,4 +1,14 @@
-import { connectNodes } from './utils';
+import path from 'path';
+import { connectNodes, getAllRules } from './utils';
+
+describe.only('getAllRules', () => {
+  const rulesPath = path.resolve(__dirname, 'rules');
+  const ruleNames = getAllRules([rulesPath]).map(rule => rule.ruleName);
+
+  it('should have the ban-numbers-in-components rule', () => {
+    expect(ruleNames).toContain('ban-numbers-in-components');
+  });
+});
 
 describe('connectNodes', () => {
   const data = {

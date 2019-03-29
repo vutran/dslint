@@ -1,6 +1,7 @@
 import * as Figma from 'figma-js';
 
 export interface RuleConstructor {
+  ruleName: string;
   new (): IRule;
 }
 
