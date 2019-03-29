@@ -14,7 +14,18 @@ async function main() {
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  walk(projectData.document, rules);
+  const allFailures = walk(projectData.document, rules);
+
+  if (allFailures.length > 0) {
+    allFailures.forEach(failure => {
+      const ruleName = chalk.bgRed.whiteBright(failure.ruleName);
+      console.error(ruleName, failure.node.name, ':', failure.message);
+    });
+
+    console.log(`\nTotal errors: ${allFailures.length}`);
+  } else {
+    console.log('No errors.');
+  }
 }
 
 main();

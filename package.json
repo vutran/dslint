@@ -7,7 +7,9 @@
     "dslint": "./dist/cli.js"
   },
   "scripts": {
+    "clean": "rm -rf ./dist",
     "build": "tsc --outDir dist --rootDir src",
+    "build-clean": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Vu Tran <vu@vu-tran.com>",

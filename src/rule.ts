@@ -4,11 +4,22 @@ export interface RuleConstructor {
   new (): IRule;
 }
 
+export interface RuleFailure {
+  ruleName: string;
+  message: string;
+  node: Figma.Node;
+}
+
 export interface IRule {
-  visit: (node: Figma.Node) => void;
+  /**
+   * Entry point for each point.
+   */
+  apply: (node: Figma.Node) => RuleFailure[];
 }
 
 export abstract class AbstractRule implements IRule {
   constructor() {}
-  visit(node: Figma.Node): void {}
+  apply(node: Figma.Node): RuleFailure[] {
+    return [];
+  }
 }
