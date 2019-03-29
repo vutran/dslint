@@ -1,13 +1,12 @@
 import * as Figma from 'figma-js';
-import { AbstractRule, RuleFailure } from '../utils/rule';
+import { AbstractRule, RuleFailure } from '../utils/abstractRule';
 
 /**
  * All nodes must belong in a Frame.
  */
 export class Rule extends AbstractRule {
-  static ruleName = 'must-be-in-frame';
-
-  apply(node: Figma.Node): RuleFailure[] {
+  apply(): RuleFailure[] {
+    const node = this.getNode();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       // TODO(vutran) - Implement
     }

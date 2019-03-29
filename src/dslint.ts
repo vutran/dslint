@@ -1,20 +1,26 @@
 import path from 'path';
 import * as Figma from 'figma-js';
-import { RuleConstructor, RuleFailure } from './utils/rule';
+import {
+  RuleConstructor,
+  RuleFailure,
+  RuleMetadata,
+  RuleNameAndConstructor,
+} from './utils/abstractRule';
 import { PRIVATE_MARKER } from './constants';
 
 export function lint(
   node: Figma.Node,
-  rules: Array<RuleConstructor>
+  rules: Array<RuleNameAndConstructor>
 ): RuleFailure[] {
   const allFailures: RuleFailure[] = [];
 
   // Iterate through all rules and apply it to the given node.
-  rules.forEach(ctor => {
-    const r = new ctor();
+  rules.forEach(([ruleName, ctor]) => {
+    const metadata: RuleMetadata = { ruleName };
+    const r = new ctor(metadata, node);
     // Ignore `@private` nodes
     if (!node.name.includes(PRIVATE_MARKER)) {
-      const ruleFailures = r.apply(node);
+      const ruleFailures = r.apply();
       ruleFailures.forEach(failure => {
         allFailures.push(failure);
       });
