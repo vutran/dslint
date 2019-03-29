@@ -4,7 +4,7 @@ import path from 'path';
 import chalk from 'chalk';
 import { getProjectData } from './figma';
 import { getAllRules } from './utils';
-import { walk } from './walker';
+import { lint } from './dslint';
 
 const [nodeBin, scriptPath, projectKey] = process.argv;
 
@@ -14,7 +14,7 @@ async function main() {
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  const allFailures = walk(projectData.document, rules);
+  const allFailures = lint(projectData.document, rules);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

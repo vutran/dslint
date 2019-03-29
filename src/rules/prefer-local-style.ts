@@ -1,5 +1,5 @@
 import * as Figma from 'figma-js';
-import { AbstractRule, RuleFailure } from '../rule';
+import { AbstractRule, RuleFailure } from '../utils/rule';
 
 // TODO(vutran) - Remove when https://github.com/jongold/figma-js/pull/15/ is merged
 type StyleKeyType =

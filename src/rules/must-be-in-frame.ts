@@ -1,5 +1,5 @@
 import * as Figma from 'figma-js';
-import { AbstractRule, RuleFailure } from '../rule';
+import { AbstractRule, RuleFailure } from '../utils/rule';
 
 /**
  * All nodes must belong in a Frame.

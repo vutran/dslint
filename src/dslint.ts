@@ -1,9 +1,9 @@
 import path from 'path';
 import * as Figma from 'figma-js';
-import { RuleConstructor, RuleFailure } from './rule';
+import { RuleConstructor, RuleFailure } from './utils/rule';
 import { PRIVATE_MARKER } from './constants';
 
-export function walk(
+export function lint(
   node: Figma.Node,
   rules: Array<RuleConstructor>
 ): RuleFailure[] {
@@ -24,7 +24,7 @@ export function walk(
   // NOTE(vutran) - vector doesn't have children so we're asserting any type
   if ((node as any).children) {
     (node as any).children.forEach((child: Figma.Node) => {
-      const childFailures = walk(child, rules);
+      const childFailures = lint(child, rules);
       childFailures.forEach(failure => {
         allFailures.push(failure);
       });
