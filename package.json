@@ -10,7 +10,8 @@
     "clean": "rm -rf ./dist",
     "build": "tsc --outDir dist --rootDir src",
     "build-clean": "npm run clean && npm run build",
-    "test": "jest src/"
+    "test": "jest src/",
+    "test:watch": "npm t -- --watch"
   },
   "author": "Vu Tran <vu@vu-tran.com>",
   "license": "MIT",
