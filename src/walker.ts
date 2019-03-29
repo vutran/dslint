@@ -1,6 +1,7 @@
 import path from 'path';
 import * as Figma from 'figma-js';
 import { RuleConstructor, RuleFailure } from './rule';
+import { PRIVATE_MARKER } from './constants';
 
 export function walk(
   node: Figma.Node,
@@ -11,10 +12,13 @@ export function walk(
   // Iterate through all rules and apply it to the given node.
   rules.forEach(ctor => {
     const r = new ctor();
-    const ruleFailures = r.apply(node);
-    ruleFailures.forEach(failure => {
-      allFailures.push(failure);
-    });
+    // Ignore `@private` nodes
+    if (!node.name.includes(PRIVATE_MARKER)) {
+      const ruleFailures = r.apply(node);
+      ruleFailures.forEach(failure => {
+        allFailures.push(failure);
+      });
+    }
   });
 
   // NOTE(vutran) - vector doesn't have children so we're asserting any type
