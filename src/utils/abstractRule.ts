@@ -1,9 +1,7 @@
-import * as Figma from 'figma-js';
-
 export interface RuleFailure {
   ruleName: string;
   message: string;
-  node: Figma.Node;
+  node: any;
 }
 
 export interface RuleMetadata {
@@ -11,7 +9,7 @@ export interface RuleMetadata {
 }
 
 export interface RuleConstructor {
-  new (metadata: RuleMetadata, node: Figma.Node): IRule;
+  new (metadata: RuleMetadata, node: any): IRule;
 }
 
 export type RuleNameAndConstructor = [string, RuleConstructor];
@@ -25,9 +23,9 @@ export interface IRule {
 
 export abstract class AbstractRule implements IRule {
   metadata: RuleMetadata;
-  node: Figma.Node;
+  node: any;
 
-  constructor(metadata: RuleMetadata, node: Figma.Node) {
+  constructor(metadata: RuleMetadata, node: any) {
     this.metadata = metadata;
     this.node = node;
   }

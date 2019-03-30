@@ -2,19 +2,26 @@
 
 import path from 'path';
 import chalk from 'chalk';
-import { getProjectData } from './figma';
+import { Client } from './figma';
 import { getAllRules } from './utils';
 import { lint } from './dslint';
 
-const [nodeBin, scriptPath, projectKey] = process.argv;
+const [nodeBin, scriptPath, fileKey] = process.argv;
+
+const FIGMA_TOKEN = process.env.FIGMA_TOKEN || '';
+if (!FIGMA_TOKEN) {
+  throw new Error('Missing Figma Token');
+}
 
 async function main() {
-  const projectData = await getProjectData(projectKey);
+  const client = new Client({ personalAccessToken: FIGMA_TOKEN });
+
+  const fileData: any = (await client.file(fileKey)).body;
 
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  const allFailures = await lint(projectData.document, rules);
+  const allFailures = await lint(fileData.document, rules);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

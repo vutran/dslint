@@ -1,15 +1,4 @@
-import * as Figma from 'figma-js';
 import { AbstractRule, RuleFailure } from '../utils/abstractRule';
-
-// TODO(vutran) - Remove when https://github.com/jongold/figma-js/pull/15/ is merged
-type StyleKeyType =
-  | 'fill'
-  | 'stroke'
-  | 'effect'
-  | 'grid'
-  | 'text'
-  | 'background';
-type StylesObject = { [K in StyleKeyType]?: string };
 
 /**
  * Prefer local style over hard-coded colors.
@@ -19,7 +8,7 @@ export class Rule extends AbstractRule {
     const ruleName = this.getRuleName();
     const node = this.getNode();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
-      const localStyles = (node as any).styles as StylesObject;
+      const localStyles = (node as any).styles as any;
 
       // Fills, strokes, and effects are available regardless if there's a local style applied
       // or not. It can be assumed that the node is using a one-off color if there are fills,

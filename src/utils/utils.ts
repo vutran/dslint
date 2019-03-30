@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import * as Figma from 'figma-js';
 import {
   AbstractRule,
   RuleConstructor,

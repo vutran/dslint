@@ -1,4 +1,3 @@
-import * as Figma from 'figma-js';
 import { AbstractRule, RuleFailure } from '../utils/abstractRule';
 
 /**

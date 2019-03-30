@@ -1,5 +1,4 @@
 import path from 'path';
-import * as Figma from 'figma-js';
 import {
   RuleConstructor,
   RuleFailure,
@@ -9,7 +8,7 @@ import {
 import { PRIVATE_MARKER } from './constants';
 
 export async function lint(
-  node: Figma.Node,
+  node: any,
   rules: Array<RuleNameAndConstructor>
 ): Promise<RuleFailure[]> {
   const allFailures: RuleFailure[] = [];
@@ -29,7 +28,7 @@ export async function lint(
 
   // NOTE(vutran) - vector doesn't have children so we're asserting any type
   if ((node as any).children) {
-    (node as any).children.forEach(async (child: Figma.Node) => {
+    (node as any).children.forEach(async (child: any) => {
       const childFailures = await lint(child, rules);
       childFailures.forEach(failure => {
         allFailures.push(failure);
