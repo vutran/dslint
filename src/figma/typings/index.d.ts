@@ -1,4 +1,22 @@
 declare namespace Figma {
+  namespace Client {
+    type AuthKey = 'bearerAccessToken' | 'personalAccessToken';
+
+    type Headers = AuthorizationHeaders | PersonalTokenHeaders;
+    interface Options {
+      bearerAccessToken?: string;
+      personalAccessToken?: string;
+    }
+
+    interface AuthorizationHeaders {
+      Authorization: string;
+    }
+
+    interface PersonalTokenHeaders {
+      'X-Figma-Token': string;
+    }
+  }
+
   // NOTE(vutran) - Any types that are currently missing in the public documentations should be set as `MissingType`.
   type MissingType = AnyType;
 

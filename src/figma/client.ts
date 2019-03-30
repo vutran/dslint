@@ -1,30 +1,10 @@
 import got from 'got';
-import http from 'http';
-
-type ClientAuthKey = 'bearerAccessToken' | 'personalAccessToken';
-
-export interface ClientOptions {
-  bearerAccessToken?: string;
-  personalAccessToken?: string;
-}
-
-export interface ClientAuthorizationHeaders extends http.OutgoingHttpHeaders {
-  Authorization: string;
-}
-
-export interface ClientPersonalTokenHeaders extends http.OutgoingHttpHeaders {
-  'X-Figma-Token': string;
-}
-
-export type ClientHeaders =
-  | ClientAuthorizationHeaders
-  | ClientPersonalTokenHeaders;
 
 export class Client {
-  private options: ClientOptions;
-  private headers: ClientHeaders;
+  private options: Figma.Client.Options;
+  private headers: Figma.Client.Headers;
 
-  public constructor(options: ClientOptions) {
+  public constructor(options: Figma.Client.Options) {
     this.options = options;
 
     this.headers = options.bearerAccessToken
@@ -34,11 +14,10 @@ export class Client {
 
   public get(endpoint: string, options?: got.GotJSONOptions) {
     const url = `https://api.figma.com/v1/${endpoint.replace(/^\//, '')}`;
-    return got(url, {
-      json: true,
-      headers: this.headers,
-      ...options,
-    });
+    return got(
+      url,
+      Object.assign({}, options, {json: true, headers: this.headers})
+    );
   }
 
   public file(key: string): got.GotPromise<Figma.File> {
