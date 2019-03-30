@@ -18,7 +18,7 @@ export async function lint(
     const metadata: RuleMetadata = { ruleName };
     const r = new ctor(metadata, node);
     // Ignore `@private` nodes
-    if (!node.data.name.includes(PRIVATE_MARKER)) {
+    if (!node.name.includes(PRIVATE_MARKER)) {
       const ruleFailures = await r.apply();
       ruleFailures.forEach(failure => {
         allFailures.push(failure);
@@ -27,8 +27,8 @@ export async function lint(
   });
 
   // NOTE(vutran) - vector doesn't have children so we're asserting AnyType
-  if ((node as AnyType).data.children) {
-    (node as AnyType).data.children.forEach(async (child: AnyType) => {
+  if ((node as AnyType).children) {
+    (node as AnyType).children.forEach(async (child: AnyType) => {
       const childFailures = await lint(child, rules);
       childFailures.forEach(failure => {
         allFailures.push(failure);

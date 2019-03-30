@@ -32,7 +32,7 @@ export class Client {
       : { 'X-Figma-Token': options.personalAccessToken };
   }
 
-  public get(endpoint: string, options?: Object) {
+  public get(endpoint: string, options?: Object): got.GotPromise<AnyType> {
     const url = `https://api.figma.com/v1/${endpoint.replace(/^\//, '')}`;
     return got(url, {
       json: true,
@@ -41,15 +41,15 @@ export class Client {
     });
   }
 
-  public file(key: string) {
+  public file(key: string): got.GotPromise<FileResponse> {
     return this.get(`/files/${key}`);
   }
 
-  public fileNodes(key: string) {
+  public fileNodes(key: string): got.GotPromise<AnyType> {
     return this.get(`/files/${key}/nodes`);
   }
 
-  public styles(key: string) {
+  public styles(key: string): got.GotPromise<AnyType> {
     return this.get(`/styles/${key}`);
   }
 }

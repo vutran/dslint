@@ -6,7 +6,7 @@ import { AbstractRule, RuleFailure } from '../utils/abstractRule';
 export class Rule extends AbstractRule {
   apply(): RuleFailure[] {
     const node = this.getNode();
-    if (node.data.type !== 'DOCUMENT' && node.data.type !== 'CANVAS') {
+    if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       // TODO(vutran) - Implement
     }
     return [];

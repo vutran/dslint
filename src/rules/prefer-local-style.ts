@@ -7,16 +7,16 @@ export class Rule extends AbstractRule {
   apply(): RuleFailure[] {
     const ruleName = this.getRuleName();
     const node = this.getNode();
-    if (node.data.type !== 'DOCUMENT' && node.data.type !== 'CANVAS') {
-      const localStyles = (node as AnyType).data.styles as AnyType;
+    if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
+      const localStyles = (node as AnyType).styles as AnyType;
 
       // Fills, strokes, and effects are available regardless if there's a local style applied
       // or not. It can be assumed that the node is using a one-off color if there are fills,
       // but no local styles associated.
 
-      const fills = (node as AnyType).data.fills as AnyType[];
-      const strokes = (node as AnyType).data.strokes as AnyType[];
-      const effects = (node as AnyType).data.effects as AnyType[];
+      const fills = (node as AnyType).fills as AnyType[];
+      const strokes = (node as AnyType).strokes as AnyType[];
+      const effects = (node as AnyType).effects as AnyType[];
 
       const isInlineFill =
         !(localStyles && localStyles.fill) && fills && fills.length > 0;
