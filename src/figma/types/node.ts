@@ -1,4 +1,5 @@
 import { Model } from './model';
+import { Canvas } from './canvas';
 
 export type NodeType =
   | 'DOCUMENT'
@@ -28,8 +29,19 @@ export class Node<T> extends Model<T & INode> {
   constructor(data: AnyType) {
     super(data);
     if (data.children) {
-      const children = data.children.map((child: AnyType) => new Node(child));
+      const children = data.children.map((child: AnyType) =>
+        Node.createByType(child.type, child)
+      );
       (this.data as any).children = children;
+    }
+  }
+
+  static createByType<U>(nodeType: NodeType, data: U) {
+    switch (nodeType) {
+      case 'CANVAS':
+        return new Canvas(data);
+      default:
+        return new Node(data);
     }
   }
 }

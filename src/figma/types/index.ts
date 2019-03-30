@@ -1,3 +1,4 @@
+export * from './canvas';
 export * from './fileResponse';
 export * from './model';
 export * from './node';
