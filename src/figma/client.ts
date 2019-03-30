@@ -1,5 +1,5 @@
-import http from 'http';
 import got from 'got';
+import http from 'http';
 
 type ClientAuthKey = 'bearerAccessToken' | 'personalAccessToken';
 
@@ -32,7 +32,7 @@ export class Client {
       : { 'X-Figma-Token': options.personalAccessToken };
   }
 
-  public get(endpoint: string, options?: Object): got.GotPromise<AnyType> {
+  public get(endpoint: string, options?: got.GotJSONOptions) {
     const url = `https://api.figma.com/v1/${endpoint.replace(/^\//, '')}`;
     return got(url, {
       json: true,
@@ -41,7 +41,7 @@ export class Client {
     });
   }
 
-  public file(key: string): got.GotPromise<FileResponse> {
+  public file(key: string): got.GotPromise<File> {
     return this.get(`/files/${key}`);
   }
 
