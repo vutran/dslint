@@ -1,7 +1,7 @@
 export interface RuleFailure {
   ruleName: string;
   message: string;
-  node: any;
+  node: AnyType;
 }
 
 export interface RuleMetadata {
@@ -9,16 +9,16 @@ export interface RuleMetadata {
 }
 
 export interface RuleConstructor {
-  new (metadata: RuleMetadata, node: any): AbstractRule;
+  new (metadata: RuleMetadata, node: AnyType): AbstractRule;
 }
 
 export type RuleNameAndConstructor = [string, RuleConstructor];
 
 export abstract class AbstractRule {
   metadata: RuleMetadata;
-  node: any;
+  node: AnyType;
 
-  constructor(metadata: RuleMetadata, node: any) {
+  constructor(metadata: RuleMetadata, node: AnyType) {
     this.metadata = metadata;
     this.node = node;
   }

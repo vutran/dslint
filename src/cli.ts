@@ -2,7 +2,7 @@
 
 import path from 'path';
 import chalk from 'chalk';
-import { Client } from './figma';
+import { Client, FileResponse } from './figma';
 import { getAllRules } from './utils';
 import { lint } from './dslint';
 
@@ -16,17 +16,17 @@ if (!FIGMA_TOKEN) {
 async function main() {
   const client = new Client({ personalAccessToken: FIGMA_TOKEN });
 
-  const fileData: any = (await client.file(fileKey)).body;
+  const fileResponse = new FileResponse((await client.file(fileKey)).body);
 
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  const allFailures = await lint(fileData.document, rules);
+  const allFailures = await lint(fileResponse.data.document, rules);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {
       const ruleName = chalk.bgRed.whiteBright(failure.ruleName);
-      console.error(ruleName, failure.node.name, ':', failure.message);
+      console.error(ruleName, failure.node.data.name, ':', failure.message);
     });
 
     console.log(`\nTotal errors: ${allFailures.length}`);

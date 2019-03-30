@@ -1,8 +1,9 @@
+import { Model } from './model';
 import { User } from './user';
 
 export type StyleType = 'FILL' | 'TEXT' | 'EFFECT' | 'GRID';
 
-export class Style {
+export interface IStyle {
   key: string;
   file_key: string;
   node_id: string;
@@ -15,3 +16,5 @@ export class Style {
   user: User;
   sort_position: string;
 }
+
+export class Style extends Model<IStyle> {}
