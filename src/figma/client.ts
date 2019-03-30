@@ -28,8 +28,8 @@ export class Client {
     this.options = options;
 
     this.headers = options.bearerAccessToken
-      ? { Authorization: `Bearer ${options.bearerAccessToken}` }
-      : { 'X-Figma-Token': options.personalAccessToken };
+      ? {Authorization: `Bearer ${options.bearerAccessToken}`}
+      : {'X-Figma-Token': options.personalAccessToken};
   }
 
   public get(endpoint: string, options?: got.GotJSONOptions) {
@@ -41,7 +41,7 @@ export class Client {
     });
   }
 
-  public file(key: string): got.GotPromise<File> {
+  public file(key: string): got.GotPromise<Figma.File> {
     return this.get(`/files/${key}`);
   }
 

@@ -1,5 +1,5 @@
 import path from 'path';
-import { getAllRules } from './utils';
+import {getAllRules} from './utils';
 
 describe('getAllRules', () => {
   const rulesPath = path.resolve(__dirname, '..', 'rules');
