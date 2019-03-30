@@ -14,7 +14,7 @@ async function main() {
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  const allFailures = lint(projectData.document, rules);
+  const allFailures = await lint(projectData.document, rules);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

@@ -8,19 +8,19 @@ import {
 } from './utils/abstractRule';
 import { PRIVATE_MARKER } from './constants';
 
-export function lint(
+export async function lint(
   node: Figma.Node,
   rules: Array<RuleNameAndConstructor>
-): RuleFailure[] {
+): Promise<RuleFailure[]> {
   const allFailures: RuleFailure[] = [];
 
   // Iterate through all rules and apply it to the given node.
-  rules.forEach(([ruleName, ctor]) => {
+  rules.forEach(async ([ruleName, ctor]) => {
     const metadata: RuleMetadata = { ruleName };
     const r = new ctor(metadata, node);
     // Ignore `@private` nodes
     if (!node.name.includes(PRIVATE_MARKER)) {
-      const ruleFailures = r.apply();
+      const ruleFailures = await r.apply();
       ruleFailures.forEach(failure => {
         allFailures.push(failure);
       });
@@ -29,8 +29,8 @@ export function lint(
 
   // NOTE(vutran) - vector doesn't have children so we're asserting any type
   if ((node as any).children) {
-    (node as any).children.forEach((child: Figma.Node) => {
-      const childFailures = lint(child, rules);
+    (node as any).children.forEach(async (child: Figma.Node) => {
+      const childFailures = await lint(child, rules);
       childFailures.forEach(failure => {
         allFailures.push(failure);
       });

@@ -41,7 +41,7 @@ export class Rule extends AbstractRule {
           {
             ruleName,
             node,
-            message: 'Prefer local styles',
+            message: `Prefer local styles.`,
           },
         ];
       }
