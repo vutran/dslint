@@ -9,7 +9,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc --outDir dist --rootDir src",
-    "build-clean": "npm run clean && npm run build",
+    "build:clean": "npm run clean && npm run build",
+    "build:watch": "npm run build -- --watch",
     "test": "jest src/",
     "test:watch": "npm t -- --watch"
   },

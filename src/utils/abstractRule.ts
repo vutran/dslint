@@ -9,19 +9,12 @@ export interface RuleMetadata {
 }
 
 export interface RuleConstructor {
-  new (metadata: RuleMetadata, node: any): IRule;
+  new (metadata: RuleMetadata, node: any): AbstractRule;
 }
 
 export type RuleNameAndConstructor = [string, RuleConstructor];
 
-export interface IRule {
-  /**
-   * Entry point for each point.
-   */
-  apply: () => RuleFailure[];
-}
-
-export abstract class AbstractRule implements IRule {
+export abstract class AbstractRule {
   metadata: RuleMetadata;
   node: any;
 
