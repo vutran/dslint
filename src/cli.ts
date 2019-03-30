@@ -2,9 +2,9 @@
 
 import path from 'path';
 import chalk from 'chalk';
-import { Client } from './figma';
-import { getAllRules } from './utils';
-import { lint } from './dslint';
+import {Client} from './figma';
+import {getAllRules} from './utils';
+import {lint} from './dslint';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
 
@@ -14,7 +14,7 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
-  const client = new Client({ personalAccessToken: FIGMA_TOKEN });
+  const client = new Client({personalAccessToken: FIGMA_TOKEN});
 
   const fileResponse = (await client.file(fileKey)).body;
 

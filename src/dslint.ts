@@ -7,6 +7,10 @@ import {
   RuleNameAndConstructor,
 } from './utils/abstractRule';
 
+export function isParentNode(node: Figma.ParentNode) {
+  return !!node.children;
+}
+
 export async function lint<T extends Figma.Node>(
   node: T,
   rules: RuleNameAndConstructor[]
@@ -26,8 +30,8 @@ export async function lint<T extends Figma.Node>(
     }
   });
 
-  if (node.children) {
-    node.children.forEach(async child => {
+  if (isParentNode(node)) {
+    (<Figma.ParentNode>node).children.forEach(async child => {
       const childFailures = await lint(child, rules);
       childFailures.forEach(failure => {
         allFailures.push(failure);

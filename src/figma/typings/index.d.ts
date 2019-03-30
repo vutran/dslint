@@ -47,9 +47,13 @@ declare namespace Figma {
     name: string;
     visible: string;
     type: NodeType;
-    // NOTE(vutran) - This isn't in the public docs, but let's assume that each node can contain a collection of child nodes
-    children?: Node[];
   }
+
+  // NOTE(vutran) - This isn't in the public docs, but some node types can contain a collection of child nodes
+  interface ParentNode<T = Node> extends Node {
+    children?: T[];
+  }
+
   interface File {
     name: string;
     lastModified: string;
@@ -65,17 +69,15 @@ declare namespace Figma {
     /**
      * Node Types
      */
-    interface Document extends Node {
-      children: Canvas[];
-    }
+    interface Document extends ParentNode<Canvas> {}
 
-    interface Canvas extends Node {
+    interface Canvas extends ParentNode {
       backgroundColor: Property.Color;
       prototypeStartNodeID: string;
       exportSettings: AnyType[];
     }
 
-    interface Frame extends Node {
+    interface Frame extends ParentNode {
       background: AnyType[];
       // @deprecated
       backgroundColor: AnyType;
