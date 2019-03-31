@@ -16,12 +16,12 @@ if (!FIGMA_TOKEN) {
 async function main() {
   const client = new Client({personalAccessToken: FIGMA_TOKEN});
 
-  const fileResponse = (await client.file(fileKey)).body;
-
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  const allFailures = await lint(fileResponse.document, rules);
+  const file = (await client.file(fileKey)).body;
+
+  const allFailures = await lint(file, rules);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

@@ -4,7 +4,7 @@ import {AbstractRule} from '../utils/abstractRule';
  * Prefer local style over hard-coded colors.
  */
 export class Rule extends AbstractRule {
-  apply(node: Figma.Node): DSLint.Rules.Failure[] {
+  apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
     const ruleName = this.getRuleName();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       const localStyles = (node as DSLint.AnyType).styles as DSLint.AnyType;

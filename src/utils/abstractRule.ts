@@ -9,7 +9,7 @@ export abstract class AbstractRule implements DSLint.Rules.AbstractRule {
     return this.metadata.ruleName;
   }
 
-  apply(node: Figma.Node): DSLint.Rules.Failure[] {
+  apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
     return [];
   }
 }
