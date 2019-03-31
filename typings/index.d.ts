@@ -14,8 +14,11 @@ declare namespace DSLint {
 
     interface AbstractRule {
       metadata: Metadata;
+      failures: Failure[];
       getRuleName(): string;
-      apply(node: Figma.Node, file?: Figma.File): Failure[];
+      getAllFailures(): Failure[];
+      addFailure(failure: Failure): void;
+      apply(node: Figma.Node, file?: Figma.File): void;
     }
 
     interface Constructor {

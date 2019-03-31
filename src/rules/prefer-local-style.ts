@@ -4,7 +4,7 @@ import {AbstractRule} from '../utils/abstractRule';
  * Prefer local style over hard-coded colors.
  */
 export class Rule extends AbstractRule {
-  apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
+  apply(node: Figma.Node, file: Figma.File) {
     const ruleName = this.getRuleName();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       const localStyles = (node as DSLint.AnyType).styles as DSLint.AnyType;
@@ -24,16 +24,29 @@ export class Rule extends AbstractRule {
       const isInlineEffect =
         !(localStyles && localStyles.effect) && effects && effects.length > 0;
 
-      if (isInlineFill || isInlineStroke || isInlineEffect) {
-        return [
-          {
-            ruleName,
-            node,
-            message: `Prefer local styles.`,
-          },
-        ];
+      if (isInlineFill) {
+        this.addFailure({
+          ruleName,
+          node,
+          message: 'Prefer local styles for fill',
+        });
+      }
+
+      if (isInlineStroke) {
+        this.addFailure({
+          ruleName,
+          node,
+          message: `Prefer local styles for stroke.`,
+        });
+      }
+
+      if (isInlineEffect) {
+        this.addFailure({
+          ruleName,
+          node,
+          message: `Prefer local styles for effect.`,
+        });
       }
     }
-    return [];
   }
 }
