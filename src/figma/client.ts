@@ -24,11 +24,11 @@ export class Client {
     return this.get(`/files/${key}`);
   }
 
-  public fileNodes(key: string): got.GotPromise<AnyType> {
+  public fileNodes(key: string): got.GotPromise<Figma.AnyType> {
     return this.get(`/files/${key}/nodes`);
   }
 
-  public styles(key: string): got.GotPromise<AnyType> {
+  public styles(key: string): got.GotPromise<Figma.AnyType> {
     return this.get(`/styles/${key}`);
   }
 }

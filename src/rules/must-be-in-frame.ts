@@ -1,11 +1,10 @@
-import { AbstractRule, RuleFailure } from '../utils/abstractRule';
+import {AbstractRule} from '../utils/abstractRule';
 
 /**
  * All nodes must belong in a Frame.
  */
 export class Rule extends AbstractRule {
-  apply(): RuleFailure[] {
-    const node = this.getNode();
+  apply(node: Figma.Node): DSLint.Rules.Failure[] {
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       // TODO(vutran) - Implement
     }

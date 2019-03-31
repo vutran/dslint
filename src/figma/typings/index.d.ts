@@ -17,6 +17,9 @@ declare namespace Figma {
     }
   }
 
+  // Alias from DSLint typings
+  type AnyType = DSLint.AnyType;
+
   // NOTE(vutran) - Any types that are currently missing in the public documentations should be set as `MissingType`.
   type MissingType = AnyType;
 
