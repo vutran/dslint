@@ -2,7 +2,7 @@
 
 import path from 'path';
 import chalk from 'chalk';
-import {Client} from './figma';
+import {Client, getLocalStyles} from './figma';
 import {lint} from './dslint';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
@@ -15,9 +15,10 @@ if (!FIGMA_TOKEN) {
 async function main() {
   const client = new Client({personalAccessToken: FIGMA_TOKEN});
   const file = (await client.file(fileKey)).body;
+  const localStyles = await getLocalStyles(file, client);
 
   try {
-    const allFailures = lint(file, client);
+    const allFailures = lint(file, localStyles, client);
 
     if (allFailures.length > 0) {
       allFailures.forEach(failure => {

@@ -1,50 +1,99 @@
 import {AbstractRule} from '../utils/abstractRule';
-
-// Fills, strokes, and effects are available regardless if there's a local style applied
-// or not. It can be assumed that the node is using a one-off color if there are inline styles,
-// but no local styles associated.
-type InlineFill = Figma.Mixins.Styles & Figma.Mixins.Fills;
-type InlineStroke = Figma.Mixins.Styles & Figma.Mixins.Strokes;
-type InlineEffect = Figma.Mixins.Styles & Figma.Mixins.Effects;
-
-function isInlineFill(node: Figma.Node): node is InlineFill {
-  const localStyles = (node as Figma.Mixins.Styles).styles;
-  const fills = (node as Figma.Mixins.Fills).fills;
-  return !(localStyles && localStyles.fill) && fills && fills.length > 0;
-}
-
-function isInlineStroke(node: Figma.Node): node is InlineStroke {
-  const localStyles = (node as Figma.Mixins.Styles).styles;
-  const strokes = (node as Figma.Mixins.Strokes).strokes;
-  return !(localStyles && localStyles.stroke) && strokes && strokes.length > 0;
-}
-
-function isInlineEffect(node: Figma.Node): node is InlineEffect {
-  const localStyles = (node as Figma.Mixins.Styles).styles;
-  const effects = (node as Figma.Mixins.Effects).effects;
-  return !(localStyles && localStyles.effect) && effects && effects.length > 0;
-}
+import nearestColor from 'nearest-color';
+import {
+  isInlineFill,
+  isInlineStroke,
+  isInlineEffect,
+  toRGB,
+} from '../figma/helpers';
 
 /**
- * Prefer local style over hard-coded colors.
+ * Prefer Local Styles over hard-coded styles (fills, strokes, and effects).
  */
 export class Rule extends AbstractRule {
-  apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
+  /**
+   * Given the list of paints, find the nearest local style.
+   */
+  findNearestFills(
+    paints: Figma.Property.Paint[],
+    localStyles: Figma.LocalStyles
+  ) {
+    let rec;
+
+    const colors = this.getColors(localStyles);
+
+    const getRecommendedLocalStyle = nearestColor.from(colors);
+
+    paints.forEach(paint => {
+      rec = getRecommendedLocalStyle(toRGB(paint.color));
+    });
+
+    return rec; /* type: nearest-color.Color */
+  }
+
+  // Builds a list of color maps for recommendation (local style name => rgb/hex)
+  getColors(localStyles: Figma.LocalStyles) {
+    const colors: {[key: string]: DSLint.AnyType} = {};
+
+    localStyles.forEach((style, styleId) => {
+      // grab the color based on the local style type
+      switch (style.metadata.style_type) {
+        case 'FILL':
+          const color = style.properties
+            .filter(prop => prop.type === 'SOLID')
+            .map(prop => toRGB(prop.color));
+          colors[style.metadata.name] = color[0];
+          break;
+        case 'TEXT':
+          // TODO(vutran) - pass
+          break;
+        case 'EFFECT':
+          break;
+        case 'GRID':
+          // TODO(vutran) - pass
+          break;
+      }
+    });
+
+    return colors;
+  }
+
+  apply(
+    node: Figma.Node,
+    file: Figma.File,
+    localStyles: Figma.LocalStyles
+  ): DSLint.Rules.Failure[] {
     const ruleName = this.getRuleName();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       if (isInlineFill(node)) {
+        // type: nearest-color.Color
+        const rec: DSLint.AnyType = this.findNearestFills(
+          node.fills,
+          localStyles
+        );
+
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for fill: ${node.name}`,
+          message: `Prefer local styles for fill: ${
+            node.name
+          }. Recommended local style: ${rec.name}`,
         });
       }
 
       if (isInlineStroke(node)) {
+        // type: nearest-color.Color
+        const rec: DSLint.AnyType = this.findNearestFills(
+          node.strokes,
+          localStyles
+        );
+
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for stroke: ${node.name}`,
+          message: `Prefer local styles for stroke: ${
+            node.name
+          }. Recommended local style: ${rec.name}`,
         });
       }
 

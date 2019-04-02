@@ -76,6 +76,15 @@ declare namespace Figma {
     styles: Map<StyleId, Property.Style>;
   }
 
+  // NOTE(vutran) - This isn't part of the API; just a mapping of the local styles metadata
+  // and it's properties extracted from the document tree.
+  interface LocalStyleMap {
+    metadata: Metadata.Style;
+    properties: Property.LocalStyle[];
+  }
+
+  type LocalStyles = Map<StyleId, LocalStyleMap>;
+
   /**
    * Collection of mixins for extending nodes
    */
@@ -90,11 +99,11 @@ declare namespace Figma {
     }
 
     interface Strokes extends Node {
-      strokes: AnyType;
+      strokes: Property.Paint[];
     }
 
     interface Effects extends Node {
-      effects: AnyType[];
+      effects: Property.Effect[];
     }
 
     // Local style keys
@@ -358,6 +367,10 @@ declare namespace Figma {
     // NOTE(vutran) - Not sure if this is correct since it is missing in the doc.
     // Copied from: https://github.com/figma/figma-extension-api/blob/bce0eeb50d751cb5fc54c8f81bb5cf2e622440ef/types/index.d.ts#L145
     type Transform = [[number, number, number], [number, number, number]];
+
+    // NOTE(vutran) - Alias for all possible local style types (color or effect).
+    // This isn't defined in the docs, just an alias
+    type LocalStyle = Paint | Effect;
   }
 
   namespace Metadata {

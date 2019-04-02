@@ -1,5 +1,6 @@
 import path from 'path';
 import {getAllRules} from './utils';
+import {getLocalStyles} from './figma/helpers';
 
 export function isParentNode(node: Figma.Mixins.Children) {
   return node.hasOwnProperty('children');
@@ -7,12 +8,13 @@ export function isParentNode(node: Figma.Mixins.Children) {
 
 export function lint(
   file: Figma.File,
+  localStyles: Figma.LocalStyles,
   client: Figma.Client.Client
 ): DSLint.Rules.Failure[] {
   const rulesPath = path.resolve(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
 
-  return lintNode(file.document, rules, file, client);
+  return lintNode(file.document, rules, file, localStyles, client);
 }
 
 export function lintNode<T extends Figma.Node>(
@@ -22,6 +24,8 @@ export function lintNode<T extends Figma.Node>(
   rules: DSLint.Rules.NameAndConstructor[],
   // The original Figma file
   file: Figma.File,
+  // A map of the Local Styles for the File
+  localStyles: Figma.LocalStyles,
   // The Figma API client
   client: Figma.Client.Client
 ): DSLint.Rules.Failure[] {
@@ -33,12 +37,14 @@ export function lintNode<T extends Figma.Node>(
 
   // Iterate through all rules and apply it to the given node.
   rulesToApply.forEach(rule => {
-    failures = failures.concat(rule.apply(node, file));
+    failures = failures.concat(rule.apply(node, file, localStyles));
   });
 
   if (isParentNode(node)) {
     (<Figma.Mixins.Children>node).children.forEach(child => {
-      failures = failures.concat(lintNode(child, rules, file, client));
+      failures = failures.concat(
+        lintNode(child, rules, file, localStyles, client)
+      );
     });
   }
 
