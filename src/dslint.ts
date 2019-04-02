@@ -1,7 +1,7 @@
 import path from 'path';
 import {PRIVATE_MARKER} from './constants';
 
-export function isParentNode(node: Figma.ParentNode) {
+export function isParentNode(node: Figma.Mixins.Children) {
   return !!node.children;
 }
 
@@ -36,7 +36,7 @@ export async function lintNode<T extends Figma.Node>(
   });
 
   if (isParentNode(node)) {
-    (<Figma.ParentNode>node).children.forEach(async child => {
+    (<Figma.Mixins.Children>node).children.forEach(async child => {
       await lintNode(child, rules, file);
     });
   }

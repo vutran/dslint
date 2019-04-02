@@ -52,11 +52,6 @@ declare namespace Figma {
     type: NodeType;
   }
 
-  // NOTE(vutran) - This isn't in the public docs, but some node types can contain a collection of child nodes
-  interface ParentNode<T = Node> extends Node {
-    children?: T[];
-  }
-
   interface File {
     name: string;
     lastModified: string;
@@ -68,19 +63,61 @@ declare namespace Figma {
     styles: Map<StyleId, Property.Style>;
   }
 
+  /**
+   * Collection of mixins for extending nodes
+   */
+  namespace Mixins {
+    // NOTE(vutran) - This isn't in the public docs, but some node types can contain a collection of child nodes
+    interface Children<T = Node> extends Node {
+      children?: T[];
+    }
+
+    interface Fills extends Node {
+      fills: Property.Paint[];
+    }
+
+    interface Strokes extends Node {
+      strokes: AnyType;
+    }
+
+    interface Effects extends Node {
+      effects: AnyType[];
+    }
+
+    // Local style keys
+    interface Styles extends Node {
+      styles: {
+        background?: StyleId;
+        effect?: StyleId;
+        fill?: StyleId;
+        grid?: StyleId;
+        stroke?: StyleId;
+        text?: StyleId;
+      };
+    }
+  }
+
   namespace Nodes {
     /**
      * Node Types
      */
-    interface Document extends ParentNode<Canvas> {}
+    interface Document extends Mixins.Children<Canvas> {}
 
-    interface Canvas extends ParentNode {
+    interface Canvas extends Mixins.Children {
       backgroundColor: Property.Color;
       prototypeStartNodeID: string;
       exportSettings: AnyType[];
     }
 
-    interface Frame extends ParentNode {
+    interface Frame
+      extends Mixins.Children,
+        // This is not documented but frames can have fills
+        Mixins.Fills,
+        // This is not document but frames can have inline styles
+        Mixins.Styles,
+        // Strokes seem to be a aggregate of strokes applied to child nodes and not reflected to the Frame itself
+        Mixins.Strokes,
+        Mixins.Effects {
       background: AnyType[];
       // @deprecated
       backgroundColor: AnyType;
@@ -97,13 +134,17 @@ declare namespace Figma {
       relativeTransform: AnyType;
       clipsContent: boolean;
       layoutGrids: AnyType[];
-      effects: AnyType[];
       isMask: boolean;
     }
 
     type Group = Frame;
 
-    interface Vector extends Node {
+    interface Vector
+      extends Node,
+        Mixins.Fills,
+        Mixins.Strokes,
+        Mixins.Effects,
+        Mixins.Styles {
       exportSettings: AnyType[];
       blendMode: AnyType;
       preserveRatio: boolean;
@@ -113,17 +154,13 @@ declare namespace Figma {
       transitionEasing: AnyType;
       opacity: number;
       absoluteBoundingBox: AnyType;
-      effects: AnyType;
       size: AnyType;
       relativeTransform: AnyType;
       isMask: boolean;
-      fills: AnyType[];
       fillGeometry: AnyType[];
-      strokes: AnyType[];
       strokeWeight: number;
       strokeGeometry: AnyType[];
       strokeAlign: 'INSIDE' | 'OUTSIDE' | 'CENTER';
-      styles: Map<AnyType, string>;
     }
 
     interface BooleanOperation extends Node {
