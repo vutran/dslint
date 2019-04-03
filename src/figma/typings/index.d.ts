@@ -51,6 +51,7 @@ declare namespace Figma {
   type Identifier = string;
   type NodeId = Identifier;
   type StyleId = Identifier;
+  type ComponentId = Identifier;
 
   interface Node {
     id: NodeId;
@@ -59,13 +60,18 @@ declare namespace Figma {
     type: NodeType;
   }
 
+  interface ComponentsMap {
+    // should be `NodeId`
+    [nodeId: string]: Property.Component;
+  }
+
   interface File {
     name: string;
     lastModified: string;
     thumbnailURL: string;
     version: string;
     document: Nodes.Document;
-    components: Map<NodeId, Property.Component>;
+    components: ComponentsMap;
     schemaVersion: number;
     styles: Map<StyleId, Property.Style>;
   }
@@ -204,7 +210,7 @@ declare namespace Figma {
     type Component = Frame;
 
     interface Instance extends Frame {
-      componentId: string;
+      componentId: Figma.ComponentId;
     }
   }
 

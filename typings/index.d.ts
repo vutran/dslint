@@ -6,7 +6,8 @@ declare namespace DSLint {
     interface Failure {
       ruleName: string;
       message: string;
-      node: AnyType;
+      // Optional since some rules can be applied at the global level
+      node?: AnyType;
     }
     interface Metadata {
       ruleName: string;

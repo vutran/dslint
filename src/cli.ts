@@ -21,17 +21,21 @@ async function main() {
 
   const file = (await client.file(fileKey)).body;
 
-  const allFailures = await lint(file, rules, client);
+  try {
+    const allFailures = await lint(file, rules, client);
 
-  if (allFailures.length > 0) {
-    allFailures.forEach(failure => {
-      const ruleName = chalk.bgRed.whiteBright(failure.ruleName);
-      console.error(ruleName, failure.node.name, ':', failure.message);
-    });
+    if (allFailures.length > 0) {
+      allFailures.forEach(failure => {
+        const ruleName = chalk.bgRed.whiteBright(failure.ruleName + ':');
+        console.error(ruleName, failure.message);
+      });
 
-    console.log(`\nTotal errors: ${allFailures.length}`);
-  } else {
-    console.log('No errors.');
+      console.log(`\nTotal errors: ${allFailures.length}`);
+    } else {
+      console.log('No errors.');
+    }
+  } catch (err) {
+    console.trace(err);
   }
 }
 
