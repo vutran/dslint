@@ -1,4 +1,26 @@
 export abstract class AbstractWalker implements DSLint.Walker {
+  node: Figma.Node;
+  options: DSLint.WalkerOptions;
+  failures: DSLint.Rules.Failure[];
+
+  constructor(node: Figma.Node, options: DSLint.WalkerOptions) {
+    this.node = node;
+    this.options = options;
+    this.failures = [];
+  }
+
+  getNode() {
+    return this.node;
+  }
+
+  addFailure(failure: DSLint.Rules.Failure) {
+    this.failures.push(failure);
+  }
+
+  getAllFailures() {
+    return this.failures;
+  }
+
   visit(node: Figma.Node) {
     switch (node.type) {
       case 'DOCUMENT':
@@ -47,64 +69,70 @@ export abstract class AbstractWalker implements DSLint.Walker {
   }
 
   visitDocument(node: Figma.Nodes.Document) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitCanvas(node: Figma.Nodes.Canvas) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitFrame(node: Figma.Nodes.Frame) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitGroup(node: Figma.Nodes.Group) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitBooleanOperation(node: Figma.Nodes.BooleanOperation) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitStar(node: Figma.Nodes.Star) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitLine(node: Figma.Nodes.Line) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitEllipse(node: Figma.Nodes.Ellipse) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitRegularPolygon(node: Figma.Nodes.RegularPolygon) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitRectangle(node: Figma.Nodes.Rectangle) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitText(node: Figma.Nodes.Text) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitSlice(node: Figma.Nodes.Slice) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitComponent(node: Figma.Nodes.Component) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
   visitInstance(node: Figma.Nodes.Component) {
-    this.walk(node);
+    this.walkChildren(node);
   }
 
-  walk(node: Figma.Node & Figma.Mixins.Children) {
-    node.children.forEach(child => {
-      this.visit(child);
-    });
+  walk(node: Figma.Node) {
+    this.visit(node);
+  }
+
+  walkChildren(node: Figma.Node & Figma.Mixins.Children) {
+    if (node.children) {
+      node.children.forEach(child => {
+        this.visit(child);
+      });
+    }
   }
 }

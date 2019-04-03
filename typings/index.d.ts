@@ -31,7 +31,17 @@ declare namespace DSLint {
     type NameAndConstructor = [string, Constructor];
   }
 
+  interface WalkerOptions {
+    ruleName: string;
+  }
+
   interface Walker {
+    node: Figma.Node;
+    options: WalkerOptions;
+    failures: DSLint.Rules.Failure[];
+    getNode(): Figma.Node;
+    addFailure(failure: DSLint.Rules.Failure): void;
+    getAllFailures(): DSLint.Rules.Failure[];
     visit(node: Figma.Node): void;
     visitDocument(node: Figma.Nodes.Document): void;
     visitCanvas(node: Figma.Nodes.Canvas): void;
@@ -47,6 +57,7 @@ declare namespace DSLint {
     visitSlice(node: Figma.Nodes.Slice): void;
     visitComponent(node: Figma.Nodes.Component): void;
     visitInstance(node: Figma.Nodes.Instance): void;
-    walk(node: Figma.Node & Figma.Mixins.Children): void;
+    walk(node: Figma.Node): void;
+    walkChildren(node: Figma.Node & Figma.Mixins.Children): void;
   }
 }
