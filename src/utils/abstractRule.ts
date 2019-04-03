@@ -24,4 +24,8 @@ export abstract class AbstractRule implements DSLint.Rules.AbstractRule {
   apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
     return [];
   }
+
+  applyWithWalker(walker: DSLint.Walker): DSLint.Rules.Failure[] {
+    return [];
+  }
 }

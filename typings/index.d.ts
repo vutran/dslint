@@ -30,4 +30,23 @@ declare namespace DSLint {
     // Tuple hold the name of the rule and it's constructor
     type NameAndConstructor = [string, Constructor];
   }
+
+  interface Walker {
+    visit(node: Figma.Node): void;
+    visitDocument(node: Figma.Nodes.Document): void;
+    visitCanvas(node: Figma.Nodes.Canvas): void;
+    visitFrame(node: Figma.Nodes.Frame): void;
+    visitGroup(node: Figma.Nodes.Group): void;
+    visitBooleanOperation(node: Figma.Nodes.BooleanOperation): void;
+    visitStar(node: Figma.Nodes.Star): void;
+    visitLine(node: Figma.Nodes.Line): void;
+    visitEllipse(node: Figma.Nodes.Ellipse): void;
+    visitRegularPolygon(node: Figma.Nodes.RegularPolygon): void;
+    visitRectangle(node: Figma.Nodes.Rectangle): void;
+    visitText(node: Figma.Nodes.Text): void;
+    visitSlice(node: Figma.Nodes.Slice): void;
+    visitComponent(node: Figma.Nodes.Component): void;
+    visitInstance(node: Figma.Nodes.Instance): void;
+    walk(node: Figma.Node & Figma.Mixins.Children): void;
+  }
 }
