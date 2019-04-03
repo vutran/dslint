@@ -1,6 +1,6 @@
 import got from 'got';
 
-export class Client {
+export class Client implements Figma.Client.Client {
   private options: Figma.Client.Options;
   private headers: Figma.Client.Headers;
 

@@ -21,7 +21,7 @@ async function main() {
 
   const file = (await client.file(fileKey)).body;
 
-  const allFailures = await lint(file, rules);
+  const allFailures = await lint(file, rules, client);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

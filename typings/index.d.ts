@@ -18,6 +18,7 @@ declare namespace DSLint {
       getRuleName(): string;
       getAllFailures(): Failure[];
       addFailure(failure: Failure): void;
+      init(client: Figma.Client.Client, file: Figma.File): void;
       apply(node: Figma.Node, file?: Figma.File): void;
     }
 

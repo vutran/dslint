@@ -1,4 +1,3 @@
-import path from 'path';
 import {PRIVATE_MARKER} from './constants';
 
 export function isParentNode(node: Figma.Mixins.Children) {
@@ -7,9 +6,13 @@ export function isParentNode(node: Figma.Mixins.Children) {
 
 export async function lint(
   file: Figma.File,
-  rules: DSLint.Rules.NameAndConstructor[]
+  rules: DSLint.Rules.NameAndConstructor[],
+  client: Figma.Client.Client
 ) {
   const rulesToApply = rules.map(([ruleName, ctor]) => new ctor({ruleName}));
+
+  // Run thhrough all rule's init hook
+  rulesToApply.forEach(rule => rule.init(client, file));
 
   await lintNode(file.document, rulesToApply, file);
 

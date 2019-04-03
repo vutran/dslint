@@ -15,6 +15,13 @@ declare namespace Figma {
     interface PersonalTokenHeaders {
       'X-Figma-Token': string;
     }
+
+    interface Client {
+      get(endpoint: string, options: any): any;
+      file(key: string): any;
+      fileNodes(key: string): any;
+      styles(key: string): any;
+    }
   }
 
   // Alias from DSLint typings
