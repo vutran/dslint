@@ -26,7 +26,7 @@ export class Rule extends AbstractRule {
         components.forEach(component => {
           this.addFailure({
             ruleName,
-            message: `Duplicate component name: ${component[0]}`,
+            message: `Duplicate component name: ${component[0]}.`,
           });
         });
       }

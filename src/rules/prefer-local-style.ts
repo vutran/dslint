@@ -36,7 +36,7 @@ export class Rule extends AbstractRule {
         this.addFailure({
           ruleName,
           node,
-          message: 'Prefer local styles for fill',
+          message: `Prefer local styles for fill: ${node.name}`,
         });
       }
 
@@ -44,7 +44,7 @@ export class Rule extends AbstractRule {
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for stroke.`,
+          message: `Prefer local styles for stroke: ${node.name}`,
         });
       }
 
@@ -52,7 +52,7 @@ export class Rule extends AbstractRule {
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for effect.`,
+          message: `Prefer local styles for effect: ${node.name}`,
         });
       }
     }

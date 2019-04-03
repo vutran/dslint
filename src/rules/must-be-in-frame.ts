@@ -13,7 +13,9 @@ export class Rule extends AbstractRule {
           this.addFailure({
             ruleName,
             node: child,
-            message: `All shapes, vectors, and text must belong within a frame.`,
+            message: `All shapes, vectors, and text must belong within a frame: ${
+              node.name
+            }`,
           });
         }
       });

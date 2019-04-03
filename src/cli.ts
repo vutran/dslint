@@ -3,7 +3,6 @@
 import path from 'path';
 import chalk from 'chalk';
 import {Client} from './figma';
-import {getAllRules} from './utils';
 import {lint} from './dslint';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
@@ -15,14 +14,10 @@ if (!FIGMA_TOKEN) {
 
 async function main() {
   const client = new Client({personalAccessToken: FIGMA_TOKEN});
-
-  const rulesPath = path.resolve(__dirname, 'rules');
-  const rules = getAllRules([rulesPath]);
-
   const file = (await client.file(fileKey)).body;
 
   try {
-    const allFailures = lint(file, rules, client);
+    const allFailures = lint(file, client);
 
     if (allFailures.length > 0) {
       allFailures.forEach(failure => {
