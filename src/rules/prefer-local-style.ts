@@ -29,7 +29,7 @@ function isInlineEffect(node: Figma.Node): node is InlineEffect {
  * Prefer local style over hard-coded colors.
  */
 export class Rule extends AbstractRule {
-  async apply(node: Figma.Node, file: Figma.File) {
+  apply(node: Figma.Node, file: Figma.File): DSLint.Rules.Failure[] {
     const ruleName = this.getRuleName();
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       if (isInlineFill(node)) {
@@ -56,5 +56,6 @@ export class Rule extends AbstractRule {
         });
       }
     }
+    return this.getAllFailures();
   }
 }

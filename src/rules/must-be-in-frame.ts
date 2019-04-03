@@ -4,7 +4,7 @@ import {AbstractRule} from '../utils/abstractRule';
  * All drawable nodes must be in a frame.
  */
 export class Rule extends AbstractRule {
-  apply(node: Figma.Node & Figma.Mixins.Children) {
+  apply(node: Figma.Node & Figma.Mixins.Children): DSLint.Rules.Failure[] {
     if (node.type === 'CANVAS') {
       const ruleName = this.getRuleName();
       node.children.forEach(child => {
@@ -18,5 +18,6 @@ export class Rule extends AbstractRule {
         }
       });
     }
+    return this.getAllFailures();
   }
 }

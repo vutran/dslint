@@ -2,25 +2,20 @@ export function isParentNode(node: Figma.Mixins.Children) {
   return !!node.children;
 }
 
-export async function lint(
+export function lint(
   file: Figma.File,
   rules: DSLint.Rules.NameAndConstructor[],
   client: Figma.Client.Client
 ) {
   const rulesToApply = rules.map(([ruleName, ctor]) => new ctor({ruleName}));
 
-  // Run thhrough all rule's init hook
+  // Run through all rule's init hook
   rulesToApply.forEach(rule => rule.init(client, file));
 
-  await lintNode(file.document, rulesToApply, file);
-
-  return rulesToApply.reduce(
-    (acc, rule) => acc.concat(rule.getAllFailures()),
-    []
-  );
+  return lintNode(file.document, rulesToApply, file);
 }
 
-export async function lintNode<T extends Figma.Node>(
+export function lintNode<T extends Figma.Node>(
   // The node to lint
   node: T,
   // A set of rules to apply
@@ -28,14 +23,18 @@ export async function lintNode<T extends Figma.Node>(
   // The original Figma file
   file: Figma.File
 ) {
+  let failures: DSLint.Rules.Failure[] = [];
+
   // Iterate through all rules and apply it to the given node.
   rules.forEach(async rule => {
-    await rule.apply(node, file);
+    failures = failures.concat(rule.apply(node, file));
   });
 
   if (isParentNode(node)) {
     (<Figma.Mixins.Children>node).children.forEach(async child => {
-      await lintNode(child, rules, file);
+      failures = failures.concat(lintNode(child, rules, file));
     });
   }
+
+  return failures;
 }
