@@ -4,6 +4,7 @@ import {
   isInlineFill,
   isInlineStroke,
   isInlineEffect,
+  isInlineType,
   toRGB,
 } from '../figma/helpers';
 
@@ -11,6 +12,44 @@ import {
  * Prefer Local Styles over hard-coded styles (fills, strokes, and effects).
  */
 export class Rule extends AbstractRule {
+  /**
+   * Given the set of text style, find the nearest font style.
+   * This is done by comparing all values and returning the local style with the most matches.
+   * Each value is weighted differently: (size (4), family (3), weight (2), line-height (1))
+   */
+  findNearestTypes(
+    style: Figma.Property.Type,
+    localStyles: Figma.LocalStyles<Figma.Property.Type>
+  ): Figma.Metadata.Style {
+    let rec;
+
+    // keep track of the best match
+    let highest_point = 0;
+    let highest = null;
+
+    localStyles.forEach(localStyle => {
+      let points = 0;
+      if (localStyle.properties.fontSize == style.fontSize) {
+        points += 4;
+      }
+      if (localStyle.properties.fontFamily == style.fontFamily) {
+        points += 3;
+      }
+      if (localStyle.properties.fontWeight == style.fontWeight) {
+        points += 2;
+      }
+      if (localStyle.properties.lineHeightPx == style.lineHeightPx) {
+        points += 1;
+      }
+      if (points >= highest_point) {
+        highest_point = points;
+        highest = localStyle.metadata.node_id;
+      }
+    });
+
+    return localStyles.get(highest).metadata;
+  }
+
   /**
    * Given the list of paints, find the nearest local style.
    */
@@ -44,12 +83,7 @@ export class Rule extends AbstractRule {
             .map(prop => toRGB(prop.color));
           colors[style.metadata.name] = color[0];
           break;
-        case 'TEXT':
-          // TODO(vutran) - pass
-          break;
         case 'EFFECT':
-          break;
-        case 'GRID':
           // TODO(vutran) - pass
           break;
       }
@@ -102,6 +136,21 @@ export class Rule extends AbstractRule {
           ruleName,
           node,
           message: `Prefer local styles for effect: ${node.name}`,
+        });
+      }
+
+      if (node.type === 'TEXT' && isInlineType(node)) {
+        const rec = this.findNearestTypes(
+          node.style,
+          localStyles as any /* for typecheck */
+        );
+
+        this.addFailure({
+          ruleName,
+          node,
+          message: `Prefer local styles for text: ${
+            node.name
+          }. Recommended text style: ${rec.name}`,
         });
       }
     }

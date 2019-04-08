@@ -78,12 +78,12 @@ declare namespace Figma {
 
   // NOTE(vutran) - This isn't part of the API; just a mapping of the local styles metadata
   // and it's properties extracted from the document tree.
-  interface LocalStyleMap {
+  interface LocalStyleMap<T> {
     metadata: Metadata.Style;
-    properties: Property.LocalStyle[];
+    properties: T;
   }
 
-  type LocalStyles = Map<StyleId, LocalStyleMap>;
+  type LocalStyles<T = Property.LocalStyle[]> = Map<StyleId, LocalStyleMap<T>>;
 
   /**
    * Collection of mixins for extending nodes
@@ -104,6 +104,10 @@ declare namespace Figma {
 
     interface Effects extends Node {
       effects: Property.Effect[];
+    }
+
+    interface Type extends Node {
+      style: Property.Type;
     }
 
     // Local style keys
@@ -204,7 +208,7 @@ declare namespace Figma {
 
     interface Text extends Vector {
       characters: string;
-      style: AnyType;
+      style: Figma.Property.TypeStyle;
       characterStyleOverrides: number[];
       styleOverrideTable: Map<number, AnyType>;
     }
@@ -337,6 +341,12 @@ declare namespace Figma {
     }
 
     interface TypeStyle {
+      styles: Type & {
+        fills: Paint[];
+      };
+    }
+
+    interface Type {
       fontFamily: string;
       fontPostScriptName: string;
       italic: boolean;
@@ -346,7 +356,6 @@ declare namespace Figma {
       textAlignHorizontal: 'LEFT' | 'RIGHT' | 'CENTER' | 'JUSTFIED';
       textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
       letterSpacing: number;
-      fills: Paint[];
       lineHeightPx: number;
       lineHeightPercent: number;
     }
@@ -368,7 +377,7 @@ declare namespace Figma {
     // Copied from: https://github.com/figma/figma-extension-api/blob/bce0eeb50d751cb5fc54c8f81bb5cf2e622440ef/types/index.d.ts#L145
     type Transform = [[number, number, number], [number, number, number]];
 
-    // NOTE(vutran) - Alias for all possible local style types (color or effect).
+    // NOTE(vutran) - Alias for all possible local style types (color, effect).
     // This isn't defined in the docs, just an alias
     type LocalStyle = Paint | Effect;
   }

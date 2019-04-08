@@ -7,6 +7,10 @@ type InlineFill = Figma.Mixins.Styles & Figma.Mixins.Fills;
 type InlineStroke = Figma.Mixins.Styles & Figma.Mixins.Strokes;
 type InlineEffect = Figma.Mixins.Styles & Figma.Mixins.Effects;
 
+// It can also be assumed that the node is using a one-off text style if there are inline
+// type styles, but no local styles associated.
+type InlineType = Figma.Mixins.Styles & Figma.Mixins.Type;
+
 export function hasLocalFill(node: Figma.Node): node is InlineFill {
   const localStyles = (node as Figma.Mixins.Styles).styles;
   return !!(localStyles && localStyles.fill);
@@ -20,6 +24,11 @@ export function hasLocalStroke(node: Figma.Node): node is InlineStroke {
 export function hasLocalEffect(node: Figma.Node): node is InlineEffect {
   const localStyles = (node as Figma.Mixins.Styles).styles;
   return !!(localStyles && localStyles.effect);
+}
+
+export function hasLocalType(node: Figma.Node): node is InlineType {
+  const localStyles = (node as Figma.Mixins.Styles).styles;
+  return !!(localStyles && localStyles.text);
 }
 
 /** Returns true if the node has inline fills */
@@ -40,6 +49,12 @@ export function isInlineEffect(node: Figma.Node): node is InlineEffect {
   return !hasLocalEffect(node) && effects && effects.length > 0;
 }
 
+/** Returns true if the node has inline types */
+export function isInlineType(node: Figma.Node): node is InlineType {
+  const style = (node as Figma.Mixins.Type).style;
+  return !hasLocalType(node) && style && Object.keys(style).length > 0;
+}
+
 export function toRGB(color: Figma.Property.Color) {
   return {
     r: color.r * 255,
@@ -49,7 +64,10 @@ export function toRGB(color: Figma.Property.Color) {
 }
 
 export class LocalStyleWalker extends AbstractWalker {
-  localStyles?: Map<Figma.StyleId, Figma.Property.LocalStyle[]>;
+  localStyles?: Map<
+    Figma.StyleId,
+    Figma.Property.LocalStyle[] | Figma.Property.Type
+  >;
 
   constructor(node: Figma.Node) {
     super(node);
@@ -69,6 +87,10 @@ export class LocalStyleWalker extends AbstractWalker {
 
     if (hasLocalEffect(node)) {
       this.localStyles.set(node.styles.effect, node.effects);
+    }
+
+    if (hasLocalType(node)) {
+      this.localStyles.set(node.styles.text, node.style);
     }
   }
 
