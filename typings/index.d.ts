@@ -12,6 +12,8 @@ declare namespace DSLint {
     interface Failure {
       ruleName: string;
       message: string;
+      // Optional description used for recommendations, links, etc.
+      description?: string;
       // Optional since some rules can be applied at the global level
       node?: AnyType;
     }

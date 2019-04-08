@@ -146,14 +146,12 @@ export class Rule extends AbstractRule {
           node.fills,
           localStyles
         );
-        const recString = rec && `Recommended local style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message:
-            `Prefer local styles for fill: ${node.name}.` +
-            (recString ? ` ${recString}` : ''),
+          message: `Prefer local styles for fill: ${node.name}.`,
+          description: rec && `Recommended local style: ${rec.name}.`,
         });
       }
 
@@ -163,14 +161,12 @@ export class Rule extends AbstractRule {
           node.strokes,
           localStyles
         );
-        const recString = rec && `Recommended local style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message:
-            `Prefer local styles for stroke: ${node.name}.` +
-            (recString ? ` ${recString}` : ''),
+          message: `Prefer local styles for stroke: ${node.name}.`,
+          description: rec && `Recommended local style: ${rec.name}.`,
         });
       }
 
@@ -187,14 +183,12 @@ export class Rule extends AbstractRule {
           node.style,
           localStyles as any /* for typecheck */
         );
-        const recString = rec && `Recommended text style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message:
-            `Prefer local styles for text: ${node.name}.` +
-            (recString ? ` ${recString}` : ''),
+          message: `Prefer local styles for text: ${node.name}.`,
+          description: rec && `Recommended text style: ${rec.name}`,
         });
       }
     }

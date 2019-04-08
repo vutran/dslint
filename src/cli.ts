@@ -19,6 +19,10 @@ async function main() {
     allFailures.forEach(failure => {
       const ruleName = chalk.bgRed.whiteBright(failure.ruleName + ':');
       console.error(ruleName, failure.message);
+      if (failure.description) {
+        console.error(`\n   ${failure.description}`);
+        console.error('');
+      }
     });
 
     console.log(`\nTotal errors: ${allFailures.length}`);
