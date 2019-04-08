@@ -29,7 +29,7 @@ export abstract class AbstractRule implements DSLint.Rules.AbstractRule {
     return [];
   }
 
-  applyWithWalker(walker: DSLint.Walker): DSLint.Rules.Failure[] {
+  applyWithWalker(walker: DSLint.RuleWalker): DSLint.Rules.Failure[] {
     walker.walk(walker.getNode());
     return walker.getAllFailures();
   }

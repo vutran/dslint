@@ -1,26 +1,14 @@
 export abstract class AbstractWalker implements DSLint.Walker {
   node: Figma.Node;
   options: DSLint.WalkerOptions;
-  failures: DSLint.Rules.Failure[];
 
-  // TODO(vutran) - Decouple walker for a generic walker and a rule walker
-  // since we're using this outside of rules
   constructor(node: Figma.Node, options?: DSLint.WalkerOptions) {
     this.node = node;
     this.options = options;
-    this.failures = [];
   }
 
   getNode() {
     return this.node;
-  }
-
-  addFailure(failure: DSLint.Rules.Failure) {
-    this.failures.push(failure);
-  }
-
-  getAllFailures() {
-    return this.failures;
   }
 
   visit(node: Figma.Node) {
