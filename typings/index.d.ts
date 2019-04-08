@@ -2,6 +2,12 @@ declare namespace DSLint {
   // Used for tracking `any` type
   type AnyType = any;
 
+  interface LintOptions {
+    client: Figma.Client.Client;
+    file: Figma.File;
+    localStyles: Figma.LocalStyles;
+  }
+
   namespace Rules {
     interface Failure {
       ruleName: string;

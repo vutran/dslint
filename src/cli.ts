@@ -13,12 +13,11 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
-  const client = new Client({personalAccessToken: FIGMA_TOKEN});
-  const file = (await client.file(fileKey)).body;
-  const localStyles = await getLocalStyles(file, client);
-
   try {
-    const allFailures = lint(file, localStyles, client);
+    const client = new Client({personalAccessToken: FIGMA_TOKEN});
+    const file = (await client.file(fileKey)).body;
+    const localStyles = await getLocalStyles(file, client);
+    const allFailures = lint({client, file, localStyles});
 
     if (allFailures.length > 0) {
       allFailures.forEach(failure => {
