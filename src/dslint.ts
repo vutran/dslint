@@ -26,10 +26,7 @@ export function lintNode<T extends Figma.Node>(
   options: DSLint.LintOptions
 ): DSLint.Rules.Failure[] {
   const {client, file, localStyles} = options;
-  // Run through all rule's init hook
   const rulesToApply = rules.map(([ruleName, ctor]) => new ctor({ruleName}));
-  rulesToApply.forEach(rule => rule.init(client, file));
-
   let failures: DSLint.Rules.Failure[] = [];
 
   // Iterate through all rules and apply it to the given node.

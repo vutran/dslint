@@ -7,7 +7,11 @@ export class Rule extends AbstractRule {
   // Map of component name -> list of tuples (component name, and id)
   count: Map<string, [string, Figma.ComponentId][]>;
 
-  init(client: Figma.Client.Client, file: Figma.File) {
+  apply(node: Figma.Node, file: Figma.File) {
+    if (node.type !== 'DOCUMENT') {
+      return [];
+    }
+
     this.count = new Map();
 
     Object.entries(file.components).forEach(([cId, c]) => {
@@ -27,5 +31,6 @@ export class Rule extends AbstractRule {
         });
       }
     });
+    return this.getAllFailures();
   }
 }
