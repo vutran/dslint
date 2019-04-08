@@ -1,9 +1,26 @@
 import path from 'path';
 import {getAllRules} from './utils';
+import {Client} from './figma';
 import {getLocalStyles} from './figma/helpers';
 
 export function isParentNode(node: Figma.Mixins.Children) {
   return node.hasOwnProperty('children');
+}
+
+export async function dslint(
+  fileKey: string,
+  personalAccessToken: string
+): Promise<DSLint.Rules.Failure[]> {
+  try {
+    const client = new Client({personalAccessToken});
+    const file = (await client.file(fileKey)).body;
+    const localStyles = await getLocalStyles(file, client);
+    const allFailures = lint({client, file, localStyles});
+    return allFailures;
+  } catch (err) {
+    console.trace(err);
+  }
+  return [];
 }
 
 export function lint({

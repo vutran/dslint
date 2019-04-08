@@ -3,7 +3,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import {Client, getLocalStyles} from './figma';
-import {lint} from './dslint';
+import {dslint} from './dslint';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
 
@@ -13,24 +13,17 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
-  try {
-    const client = new Client({personalAccessToken: FIGMA_TOKEN});
-    const file = (await client.file(fileKey)).body;
-    const localStyles = await getLocalStyles(file, client);
-    const allFailures = lint({client, file, localStyles});
+  const allFailures = await dslint(fileKey, FIGMA_TOKEN);
 
-    if (allFailures.length > 0) {
-      allFailures.forEach(failure => {
-        const ruleName = chalk.bgRed.whiteBright(failure.ruleName + ':');
-        console.error(ruleName, failure.message);
-      });
+  if (allFailures.length > 0) {
+    allFailures.forEach(failure => {
+      const ruleName = chalk.bgRed.whiteBright(failure.ruleName + ':');
+      console.error(ruleName, failure.message);
+    });
 
-      console.log(`\nTotal errors: ${allFailures.length}`);
-    } else {
-      console.log('No errors.');
-    }
-  } catch (err) {
-    console.trace(err);
+    console.log(`\nTotal errors: ${allFailures.length}`);
+  } else {
+    console.log('No errors.');
   }
 }
 
