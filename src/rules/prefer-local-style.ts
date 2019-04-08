@@ -22,13 +22,36 @@ export class Rule extends AbstractRule {
     localStyles: Figma.LocalStyles<Figma.Property.Type>
   ): Figma.Metadata.Style {
     // keep track of the best match
-    let highest_point = 0;
+    let highestPoint = 0;
     let highest = null;
+
+    // keep track of the best font size
+    let bestFontSizeDist = 0;
+    let bestFontSize = 0;
 
     localStyles.forEach(localStyle => {
       let points = 0;
       if (localStyle.properties.fontSize == style.fontSize) {
         points += 4;
+      } else {
+        let sizeMatch = false;
+        if (!bestFontSize) {
+          sizeMatch = true;
+        } else {
+          const dist = Math.abs(
+            localStyle.properties.fontSize - style.fontSize
+          );
+          if (dist < bestFontSizeDist) {
+            sizeMatch = true;
+          }
+        }
+        if (sizeMatch) {
+          bestFontSize = localStyle.properties.fontSize;
+          bestFontSizeDist = Math.abs(
+            localStyle.properties.fontSize - style.fontSize
+          );
+          points += 4;
+        }
       }
       if (localStyle.properties.fontFamily == style.fontFamily) {
         points += 3;
@@ -39,8 +62,8 @@ export class Rule extends AbstractRule {
       if (localStyle.properties.lineHeightPx == style.lineHeightPx) {
         points += 1;
       }
-      if (points >= highest_point) {
-        highest_point = points;
+      if (points >= highestPoint) {
+        highestPoint = points;
         highest = localStyle.metadata.node_id;
       }
     });
