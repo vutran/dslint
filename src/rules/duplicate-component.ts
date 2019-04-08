@@ -1,9 +1,5 @@
 import {AbstractRule} from '../utils/abstractRule';
 
-function isInstance(node: Figma.Node): node is Figma.Nodes.Instance {
-  return !!(node as Figma.Nodes.Instance).componentId;
-}
-
 /**
  * Ensures there are no duplicate named components.
  */
