@@ -16,6 +16,10 @@ export class Rule extends AbstractRule {
    * Given the set of text style, find the nearest font style.
    * This is done by comparing all values and returning the local style with the most matches.
    * Each value is weighted differently: (size (4), family (3), weight (2), line-height (1))
+   *
+   * Limitations: There isn't any local style available in the file. While they may be loaded from
+   * an external file, they won't actually be available the the API response until it is
+   * referenced somewhere.
    */
   findNearestTypes(
     style: Figma.Property.Type,
@@ -30,6 +34,10 @@ export class Rule extends AbstractRule {
     let bestFontSize = 0;
 
     localStyles.forEach(localStyle => {
+      if (!localStyle || !localStyle.metadata) {
+        return;
+      }
+
       let points = 0;
       if (localStyle.properties.fontSize == style.fontSize) {
         points += 4;
@@ -68,25 +76,33 @@ export class Rule extends AbstractRule {
       }
     });
 
-    return localStyles.get(highest).metadata;
+    return highest && localStyles.get(highest).metadata;
   }
 
   /**
    * Given the list of paints, find the nearest local style.
+   *
+   * Limitations: There isn't any local style available in the file. While they may be loaded from
+   * an external file, they won't actually be available the the API response until it is
+   * referenced somewhere.
    */
   findNearestFills(
     paints: Figma.Property.Paint[],
     localStyles: Figma.LocalStyles
   ) {
+    if (localStyles.size === 0) {
+      return;
+    }
     let rec;
-
     const colors = this.getColors(localStyles);
 
-    const getRecommendedLocalStyle = nearestColor.from(colors);
+    if (Object.keys(colors).length > 0) {
+      const getRecommendedLocalStyle = nearestColor.from(colors);
 
-    paints.forEach(paint => {
-      rec = getRecommendedLocalStyle(toRGB(paint.color));
-    });
+      paints.forEach(paint => {
+        rec = getRecommendedLocalStyle(toRGB(paint.color));
+      });
+    }
 
     return rec; /* type: nearest-color.Color */
   }
@@ -96,6 +112,10 @@ export class Rule extends AbstractRule {
     const colors: {[key: string]: DSLint.AnyType} = {};
 
     localStyles.forEach((style, styleId) => {
+      if (!style || !style.metadata) {
+        return;
+      }
+
       // grab the color based on the local style type
       switch (style.metadata.style_type) {
         case 'FILL':
@@ -126,13 +146,14 @@ export class Rule extends AbstractRule {
           node.fills,
           localStyles
         );
+        const recString = rec && `Recommended local style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for fill: ${
-            node.name
-          }. Recommended local style: ${rec.name}`,
+          message:
+            `Prefer local styles for fill: ${node.name}.` +
+            (recString ? ` ${recString}` : ''),
         });
       }
 
@@ -142,13 +163,14 @@ export class Rule extends AbstractRule {
           node.strokes,
           localStyles
         );
+        const recString = rec && `Recommended local style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for stroke: ${
-            node.name
-          }. Recommended local style: ${rec.name}`,
+          message:
+            `Prefer local styles for stroke: ${node.name}.` +
+            (recString ? ` ${recString}` : ''),
         });
       }
 
@@ -165,13 +187,14 @@ export class Rule extends AbstractRule {
           node.style,
           localStyles as any /* for typecheck */
         );
+        const recString = rec && `Recommended text style: ${rec.name}.`;
 
         this.addFailure({
           ruleName,
           node,
-          message: `Prefer local styles for text: ${
-            node.name
-          }. Recommended text style: ${rec.name}`,
+          message:
+            `Prefer local styles for text: ${node.name}.` +
+            (recString ? ` ${recString}` : ''),
         });
       }
     }
