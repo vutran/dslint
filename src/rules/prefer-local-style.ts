@@ -21,8 +21,6 @@ export class Rule extends AbstractRule {
     style: Figma.Property.Type,
     localStyles: Figma.LocalStyles<Figma.Property.Type>
   ): Figma.Metadata.Style {
-    let rec;
-
     // keep track of the best match
     let highest_point = 0;
     let highest = null;
