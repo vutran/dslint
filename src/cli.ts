@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import chalk from 'chalk';
 import {dslint} from './dslint';
 import {getCoreRulesPath} from './utils';
+import {logResults} from './logger';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
 
@@ -13,22 +13,8 @@ if (!FIGMA_TOKEN) {
 
 async function main() {
   const rulesPath = getCoreRulesPath();
-  const allFailures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath]);
-
-  if (allFailures.length > 0) {
-    allFailures.forEach(failure => {
-      const ruleName = chalk.bgRed.whiteBright(failure.ruleName + ':');
-      console.error(ruleName, failure.message);
-      if (failure.description) {
-        console.error(`\n   ${failure.description}`);
-        console.error('');
-      }
-    });
-
-    console.log(`\nTotal errors: ${allFailures.length}`);
-  } else {
-    console.log('No errors.');
-  }
+  const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath]);
+  logResults(failures);
 }
 
 main();
