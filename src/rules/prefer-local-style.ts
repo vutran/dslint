@@ -152,6 +152,10 @@ export class Rule extends AbstractRule {
           node,
           message: `Prefer local styles for fill: ${node.name}.`,
           description: rec && `Recommended local style: ${rec.name}.`,
+          ruleData: {
+            type: 'fill',
+            rec,
+          },
         });
       }
 
@@ -167,6 +171,10 @@ export class Rule extends AbstractRule {
           node,
           message: `Prefer local styles for stroke: ${node.name}.`,
           description: rec && `Recommended local style: ${rec.name}.`,
+          ruleData: {
+            type: 'stroke',
+            rec,
+          },
         });
       }
 
@@ -175,6 +183,9 @@ export class Rule extends AbstractRule {
           ruleName,
           node,
           message: `Prefer local styles for effect: ${node.name}`,
+          ruleData: {
+            type: 'effect',
+          },
         });
       }
 
@@ -189,6 +200,11 @@ export class Rule extends AbstractRule {
           node,
           message: `Prefer local styles for text: ${node.name}.`,
           description: rec && `Recommended text style: ${rec.name}`,
+          thumbnail: rec.thumbnail_url,
+          ruleData: {
+            type: 'text',
+            rec,
+          },
         });
       }
     }

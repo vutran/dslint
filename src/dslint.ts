@@ -28,9 +28,8 @@ export function lint({
   file,
   localStyles,
 }: DSLint.LintOptions): DSLint.Rules.Failure[] {
-  const rulesPath = path.resolve(__dirname, 'rules');
+  const rulesPath = path.join(__dirname, 'rules');
   const rules = getAllRules([rulesPath]);
-
   return lintNode(file.document, rules, {client, file, localStyles});
 }
 

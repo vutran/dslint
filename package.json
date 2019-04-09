@@ -2,7 +2,8 @@
   "name": "dslint",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "typings/index.d.ts",
   "bin": {
     "dslint": "./dist/cli.js"
   },

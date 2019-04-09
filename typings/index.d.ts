@@ -16,6 +16,10 @@ declare namespace DSLint {
       description?: string;
       // Optional since some rules can be applied at the global level
       node?: AnyType;
+      // Optional thumbnail
+      thumbnail?: string;
+      // Additional rule-specific metadata
+      ruleData?: AnyType;
     }
     interface Metadata {
       ruleName: string;
@@ -76,4 +80,11 @@ declare namespace DSLint {
     addFailure(failure: DSLint.Rules.Failure): void;
     getAllFailures(): DSLint.Rules.Failure[];
   }
+}
+
+declare module 'dslint' {
+  export function dslint(
+    fileKey: string,
+    personalAccessToken: string
+  ): Promise<DSLint.Rules.Failure[]>;
 }
