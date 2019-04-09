@@ -1,4 +1,4 @@
-import {AbstractWalker} from '../utils/abstractWalker';
+import {AbstractWalker} from '../base/walker';
 
 // Fills, strokes, and effects are available regardless if there's a local style applied
 // or not. It can be assumed that the node is using a one-off color if there are inline styles,
@@ -34,7 +34,8 @@ export function hasLocalType(node: Figma.Node): node is InlineType {
 /** Returns true if the node has inline fills */
 export function isInlineFill(node: Figma.Node): node is InlineFill {
   const fills = (node as Figma.Mixins.Fills).fills;
-  return !hasLocalFill(node) && fills && fills.length > 0;
+  const solidfills = fills && fills.filter(fill => fill.type === 'SOLID');
+  return !hasLocalFill(node) && solidfills && solidfills.length > 0;
 }
 
 /** Returns true if the node has inline strokes */

@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-import path from 'path';
 import chalk from 'chalk';
-import {Client, getLocalStyles} from './figma';
 import {dslint} from './dslint';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;

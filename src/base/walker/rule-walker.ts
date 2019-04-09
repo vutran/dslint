@@ -1,4 +1,4 @@
-import {AbstractWalker} from './abstractWalker';
+import {AbstractWalker} from './';
 
 export abstract class RuleWalker extends AbstractWalker
   implements DSLint.RuleWalker {

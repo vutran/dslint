@@ -1,4 +1,4 @@
-import {AbstractRule} from '../utils/abstractRule';
+import {AbstractRule} from '../base/rule';
 
 /**
  * Ensures there are no duplicate named components.

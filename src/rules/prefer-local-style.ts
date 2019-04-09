@@ -1,5 +1,5 @@
-import {AbstractRule} from '../utils/abstractRule';
 import nearestColor from 'nearest-color';
+import {AbstractRule} from '../base/rule';
 import {
   isInlineFill,
   isInlineStroke,

@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import {AbstractRule} from './abstractRule';
 
 export function getAllRules(
   rulesPaths: string[]

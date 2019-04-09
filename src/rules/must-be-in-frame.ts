@@ -1,4 +1,4 @@
-import {AbstractRule} from '../utils/abstractRule';
+import {AbstractRule} from '../base/rule';
 
 /**
  * All drawable nodes must be in a frame.
