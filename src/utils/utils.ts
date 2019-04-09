@@ -1,6 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * Returns the path to the core rules
+ */
+export function getCoreRulesPath() {
+  return path.resolve(__dirname, '..', 'rules');
+}
+
 export function getAllRules(
   rulesPaths: string[]
 ): DSLint.Rules.NameAndConstructor[] {

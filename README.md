@@ -25,12 +25,19 @@ $ FIGMA_TOKEN=my-figma-token dslint abcdefg1234567890
 ## JavaScript API
 
 ```tsx
-import {dslint} from 'dslint';
+import {dslint, getCoreRulesPath} from 'dslint';
 
 const fileKey = 'abcdefg1234567890';
 const token = 'my-figma-token';
 
-dslint(fileKey, token).then(failures => {
+const rulesPaths = [
+  // optionally include the core set of rules already provided
+  getCoreRulesPath(),
+  // optionally add more rules directory
+  path.resolve(__dirname, './rules'),
+];
+
+dslint(fileKey, token, rulesPaths).then(failures => {
   console.log(failures);
 });
 ```

@@ -6,6 +6,7 @@ declare namespace DSLint {
     client: Figma.Client.Client;
     file: Figma.File;
     localStyles: Figma.LocalStyles;
+    rules: DSLint.Rules.NameAndConstructor[];
   }
 
   namespace Rules {
@@ -85,6 +86,13 @@ declare namespace DSLint {
 declare module 'dslint' {
   export function dslint(
     fileKey: string,
-    personalAccessToken: string
+    personalAccessToken: string,
+    // A list of paths to load rules from
+    rulesPath: string
   ): Promise<DSLint.Rules.Failure[]>;
+
+  /**
+   * Returns the path to the core rules
+   */
+  export function getCoreRulesPath(): string[];
 }

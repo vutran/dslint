@@ -2,6 +2,7 @@
 
 import chalk from 'chalk';
 import {dslint} from './dslint';
+import {getCoreRulesPath} from './utils';
 
 const [nodeBin, scriptPath, fileKey] = process.argv;
 
@@ -11,7 +12,8 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
-  const allFailures = await dslint(fileKey, FIGMA_TOKEN);
+  const rulesPath = getCoreRulesPath();
+  const allFailures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath]);
 
   if (allFailures.length > 0) {
     allFailures.forEach(failure => {

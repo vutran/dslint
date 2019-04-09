@@ -1,7 +1,5 @@
-import path from 'path';
 import {getAllRules} from './utils';
-import {Client} from './figma';
-import {getLocalStyles} from './figma/helpers';
+import {Client, getLocalStyles} from './figma';
 
 function isParentNode(node: Figma.Mixins.Children) {
   return node.hasOwnProperty('children');
@@ -11,21 +9,18 @@ function lint({
   client,
   file,
   localStyles,
+  rules,
 }: DSLint.LintOptions): DSLint.Rules.Failure[] {
-  const rulesPath = path.join(__dirname, 'rules');
-  const rules = getAllRules([rulesPath]);
-  return lintNode(file.document, rules, {client, file, localStyles});
+  return lintNode(file.document, {client, file, localStyles, rules});
 }
 
 function lintNode<T extends Figma.Node>(
   // The node to lint
   node: T,
-  // A set of rule names, and Rules to apply
-  rules: DSLint.Rules.NameAndConstructor[],
   // A set of linter options
   options: DSLint.LintOptions
 ): DSLint.Rules.Failure[] {
-  const {client, file, localStyles} = options;
+  const {file, localStyles, rules} = options;
   const rulesToApply = rules.map(([ruleName, ctor]) => new ctor({ruleName}));
   let failures: DSLint.Rules.Failure[] = [];
 
@@ -36,7 +31,7 @@ function lintNode<T extends Figma.Node>(
 
   if (isParentNode(node)) {
     (<Figma.Mixins.Children>node).children.forEach(child => {
-      failures = failures.concat(lintNode(child, rules, options));
+      failures = failures.concat(lintNode(child, options));
     });
   }
 
@@ -45,13 +40,16 @@ function lintNode<T extends Figma.Node>(
 
 export async function dslint(
   fileKey: string,
-  personalAccessToken: string
+  personalAccessToken: string,
+  // A list of paths to load rules from
+  rulesPaths: string[]
 ): Promise<DSLint.Rules.Failure[]> {
   try {
+    const rules = getAllRules(rulesPaths);
     const client = new Client({personalAccessToken});
     const file = (await client.file(fileKey)).body;
     const localStyles = await getLocalStyles(file, client);
-    const allFailures = lint({client, file, localStyles});
+    const allFailures = lint({client, file, localStyles, rules});
     return allFailures;
   } catch (err) {
     console.trace(err);
