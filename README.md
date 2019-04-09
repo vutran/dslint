@@ -4,17 +4,25 @@
 
 ## Install
 
+If you'd like to use the CLI version, you can instally it globally:
+
 ```bash
 $ npm i -g dslint
 ```
 
-## Usage
+If you'd like to use the JavaScript API for your own applications, you can install it as a dependency:
+
+```bash
+$ npm i -S dslint
+```
+
+## CLI Usage
 
 ```bash
 $ FIGMA_TOKEN=my-figma-token dslint abcdefg1234567890
 ```
 
-## API
+## JavaScript API
 
 ```tsx
 import {dslint} from 'dslint';
