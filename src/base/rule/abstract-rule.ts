@@ -19,8 +19,6 @@ export abstract class AbstractRule implements DSLint.Rules.AbstractRule {
     this.failures.push(failure);
   }
 
-  init(client: Figma.Client.Client, file: Figma.File) {}
-
   apply(
     node: Figma.Node,
     file: Figma.File,
