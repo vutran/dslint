@@ -1,5 +1,5 @@
 import {getAllRules} from './utils';
-import {Client, getLocalStyles} from './figma';
+import {Client, getLocalStyles} from './toolkits/figma';
 
 function isParentNode(node: Figma.Mixins.Children) {
   return node.hasOwnProperty('children');

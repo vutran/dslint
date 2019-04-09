@@ -6,7 +6,7 @@ import {
   isInlineEffect,
   isInlineType,
   toRGB,
-} from '../figma/helpers';
+} from '../toolkits/figma';
 
 /**
  * Prefer Local Styles over hard-coded styles (fills, strokes, and effects).

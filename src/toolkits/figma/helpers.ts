@@ -1,4 +1,4 @@
-import {AbstractWalker} from '../base/walker';
+import {AbstractWalker} from '../../base/walker';
 
 // Fills, strokes, and effects are available regardless if there's a local style applied
 // or not. It can be assumed that the node is using a one-off color if there are inline styles,
