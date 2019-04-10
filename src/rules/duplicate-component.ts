@@ -19,7 +19,7 @@ class ComponentWalker extends RuleWalker<ComponentWalkerOptions> {
   // Map of component name -> list of tuples (component name, and id)
   count: Map<string, [string, Figma.ComponentId][]>;
 
-  visitComponent(node: Figma.Nodes.Component) {
+  visitDocument(node: Figma.Nodes.Document) {
     const {file} = this.options;
     this.count = new Map();
 
