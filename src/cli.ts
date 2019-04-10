@@ -13,8 +13,11 @@ if (!FIGMA_TOKEN) {
 
 async function main() {
   const rulesPath = getCoreRulesPath();
+  const startTime = Date.now();
   const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath]);
-  logResults(failures);
+  const endTime = Date.now();
+  const diffTime = endTime - startTime;
+  logResults(failures, diffTime);
 }
 
 main();

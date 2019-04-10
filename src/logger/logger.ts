@@ -9,10 +9,14 @@ export function logError(failure: DSLint.Rules.Failure) {
   }
 }
 
-export function logResults(failures: DSLint.Rules.Failure[]) {
+export function logResults(
+  failures: DSLint.Rules.Failure[],
+  timeSpent: number
+) {
   if (failures.length > 0) {
     failures.forEach(logError);
     console.error(`\nTotal errors: ${failures.length}`);
+    console.error(`\nTime spent: ${timeSpent / 1000}s`);
   } else {
     console.log('No errors.');
   }
