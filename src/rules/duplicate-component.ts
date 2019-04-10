@@ -5,6 +5,11 @@ import {RuleWalker} from '../base/walker';
  * Ensures there are no duplicate named components.
  */
 export class Rule extends AbstractRule {
+  static metadata: DSLint.Rules.Metadata = {
+    ruleName: 'duplicate-component',
+    description: 'Disallows duplicate component names.',
+  };
+
   apply(node: Figma.Node, file: Figma.File) {
     const ruleName = this.getRuleName();
     return this.applyWithWalker(new ComponentWalker(node, {ruleName, file}));
@@ -29,13 +34,12 @@ class ComponentWalker extends RuleWalker<ComponentWalkerOptions> {
       this.count.set(name, [...n, [c.name, cId]]);
     });
 
-    const ruleName = this.getRuleName();
     this.count.forEach(components => {
       if (components.length > 1) {
         components.forEach(component => {
           this.addFailure({
-            ruleName,
-            message: `Duplicate component name: ${component[0]}.`,
+            location: component[1],
+            message: `Duplicate component name "${component[0]}".`,
           });
         });
       }

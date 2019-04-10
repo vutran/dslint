@@ -17,7 +17,7 @@ async function main() {
   const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath]);
   const endTime = Date.now();
   const diffTime = endTime - startTime;
-  logResults(failures, diffTime);
+  logResults(fileKey, failures, diffTime);
 }
 
 main();

@@ -10,24 +10,28 @@ declare namespace DSLint {
   }
 
   namespace Rules {
-    interface Failure {
+    interface Failure extends AddFailure {
       ruleName: string;
+    }
+
+    // These are the only required options for calling `addFailure()`.
+    interface AddFailure {
+      location: Figma.NodeId;
       message: string;
-      // Optional description used for recommendations, links, etc.
-      description?: string;
       // Optional since some rules can be applied at the global level
-      node?: AnyType;
+      node?: Figma.Node;
       // Optional thumbnail
       thumbnail?: string;
       // Additional rule-specific metadata
       ruleData?: AnyType;
     }
+
     interface Metadata {
       ruleName: string;
+      description: string;
     }
 
     interface AbstractRule {
-      metadata: Metadata;
       getRuleName(): string;
       apply(
         node: Figma.Node,
@@ -36,8 +40,13 @@ declare namespace DSLint {
       ): Failure[];
     }
 
+    interface ConstructorOptions {
+      ruleName: string;
+    }
+
     interface Constructor {
-      new (metadata: Metadata): AbstractRule;
+      metadata: Metadata;
+      new (options: ConstructorOptions): AbstractRule;
     }
 
     // Tuple hold the name of the rule and it's constructor

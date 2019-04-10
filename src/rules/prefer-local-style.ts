@@ -10,9 +10,15 @@ import {
 } from '../toolkits/figma';
 
 /**
- * Prefer Local Styles over hard-coded styles (fills, strokes, and effects).
+ * Prefer Local Styles over hard-coded styles (fills, strokes, effects, and text).
  */
 export class Rule extends AbstractRule {
+  static metadata: DSLint.Rules.Metadata = {
+    ruleName: 'prefer-local-style',
+    description:
+      'Prefer Local Styles over hard-coded styles (fills, strokes, effects, and text).',
+  };
+
   apply(
     node: Figma.Node,
     file: Figma.File,
@@ -151,8 +157,15 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
     return colors;
   }
 
+  createMessage(msg: string, rec?: DSLint.AnyType) {
+    if (rec && rec.name) {
+      return `${msg}. Recommended local style: ${rec.name}`;
+    }
+    return msg;
+  }
+
   visit(node: Figma.Node & Figma.Mixins.Children) {
-    const {ruleName, localStyles} = this.options;
+    const {localStyles} = this.options;
 
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       if (isInlineFill(node)) {
@@ -163,10 +176,12 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
         );
 
         this.addFailure({
-          ruleName,
+          location: node.id,
           node,
-          message: `Prefer local styles for fill: ${node.name}.`,
-          description: rec && `Recommended local style: ${rec.name}.`,
+          message: this.createMessage(
+            `Unexpected inline fill for "${node.name}"`,
+            rec
+          ),
           ruleData: {
             type: 'fill',
             rec,
@@ -182,10 +197,12 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
         );
 
         this.addFailure({
-          ruleName,
+          location: node.id,
           node,
-          message: `Prefer local styles for stroke: ${node.name}.`,
-          description: rec && `Recommended local style: ${rec.name}.`,
+          message: this.createMessage(
+            `Unexpected inline stroke for "${node.name}"`,
+            rec
+          ),
           ruleData: {
             type: 'stroke',
             rec,
@@ -195,9 +212,11 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
 
       if (isInlineEffect(node)) {
         this.addFailure({
-          ruleName,
+          location: node.id,
           node,
-          message: `Prefer local styles for effect: ${node.name}`,
+          message: this.createMessage(
+            `Unexpected inline effect style for "${node.name}"`
+          ),
           ruleData: {
             type: 'effect',
           },
@@ -211,10 +230,12 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
         );
 
         this.addFailure({
-          ruleName,
+          location: node.id,
           node,
-          message: `Prefer local styles for text: ${node.name}.`,
-          description: rec && `Recommended text style: ${rec.name}`,
+          message: this.createMessage(
+            `Unexpected inline text style for "${node.name}"`,
+            rec
+          ),
           thumbnail: rec.thumbnail_url,
           ruleData: {
             type: 'text',

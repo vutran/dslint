@@ -5,6 +5,11 @@ import {RuleWalker} from '../base/walker';
  * All drawable nodes must be in a frame.
  */
 export class Rule extends AbstractRule {
+  static metadata: DSLint.Rules.Metadata = {
+    ruleName: 'must-be-in-frame',
+    description: 'All drawable nodes must be in a frame.',
+  };
+
   apply(node: Figma.Node & Figma.Mixins.Children): DSLint.Rules.Failure[] {
     const ruleName = this.getRuleName();
     return this.applyWithWalker(new InFrameWalker(node, {ruleName}));
@@ -18,16 +23,13 @@ class InFrameWalker extends RuleWalker {
       return;
     }
 
-    const ruleName = this.getRuleName();
     node.children.forEach(child => {
       // Assert that non-FRAME children are drawable nodes (vector, text, etc.)
       if (child.type !== 'FRAME') {
         this.addFailure({
-          ruleName,
+          location: child.id,
           node: child,
-          message: `All shapes, vectors, and text must belong within a frame: ${
-            child.name
-          }`,
+          message: `Expected "${child.name}" to be in a Frame`,
         });
       }
     });
