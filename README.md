@@ -67,7 +67,6 @@ export class Rule extends AbstractRule {
     if (node.type === 'COMPONENT') {
       return [
         {
-          ruleName: this.getRuleName(),
           node,
           message: `Component detected: ${node.name}`,
         },
