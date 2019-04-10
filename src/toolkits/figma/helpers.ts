@@ -117,8 +117,14 @@ export async function getLocalStyles(
   const keys = Object.values(file.styles).map(style => style.key);
 
   for (const key of keys) {
-    const style = (await client.styles(key)).body.meta;
-    metadata.set(style.node_id, style);
+    try {
+      const style = (await client.styles(key)).body.meta;
+      metadata.set(style.node_id, style);
+    } catch (err) {
+      console.error(
+        `Oops, failed trying to load a style ${key}. Please make sure your file is published.`
+      );
+    }
   }
 
   // extract the properties from the document tree
