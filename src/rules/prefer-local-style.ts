@@ -236,7 +236,7 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
             `Unexpected inline text style for "${node.name}"`,
             rec
           ),
-          thumbnail: rec.thumbnail_url,
+          thumbnail: rec && rec.thumbnail_url,
           ruleData: {
             type: 'text',
             rec,
