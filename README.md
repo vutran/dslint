@@ -24,7 +24,7 @@ $ FIGMA_TOKEN=my-figma-token dslint abcdefg1234567890
 
 ## JavaScript API
 
-```tsx
+```ts
 import {dslint, getCoreRulesPath} from 'dslint';
 
 const fileKey = 'abcdefg1234567890';
@@ -52,9 +52,12 @@ DSLint ships with some basic rules you can apply to your design systems. However
 - All rules should extend the `AbstractRule` class.
 - All rules must implement the `apply()` method that return a list of failures.
 
-```tsx
+```ts
 import {AbstractRule} from 'dslint';
 
+/**
+ * Simple rule that detects for component nodes.
+ */
 export class Rule extends AbstractRule {
   apply(
     node: Figma.Node,
@@ -62,13 +65,15 @@ export class Rule extends AbstractRule {
     localStyles: Figma.LocalStyles
   ): DSLint.Rules.Failures[] {
     if (node.type === 'COMPONENT') {
-      this.addFailure({
-        ruleName: this.getRuleName(),
-        node,
-        message: `Component detected: ${node.name}`,
-      });
+      return [
+        {
+          ruleName: this.getRuleName(),
+          node,
+          message: `Component detected: ${node.name}`,
+        },
+      ];
     }
-    return this.getAllFailures();
+    return [];
   }
 }
 ```
