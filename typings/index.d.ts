@@ -2,6 +2,10 @@ declare namespace DSLint {
   // Used for tracking `any` type
   type AnyType = any;
 
+  interface Configuration {
+    matchName: string;
+  }
+
   interface LintOptions {
     client: Figma.Client.Client;
     file: Figma.File;
@@ -89,6 +93,7 @@ declare namespace DSLint {
   }
 
   interface DocumentWalker extends Walker {
+    config: DSLint.Configuration;
     failures: DSLint.Rules.Failure[];
     addFailure(failure: DSLint.Rules.Failure): void;
     getAllFailures(): DSLint.Rules.Failure[];

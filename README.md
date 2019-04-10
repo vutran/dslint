@@ -18,8 +18,21 @@ $ npm i -S dslint
 
 ## CLI Usage
 
+### Environmental Variables
+
+- `FIGMA_TOKEN` - A personal access token from Figma API
+
+Basic usage:
+
 ```bash
-$ FIGMA_TOKEN=my-figma-token dslint abcdefg1234567890
+
+$ dslint abcdefg1234567890
+```
+
+Lint against a specific node and it's children
+
+```bash
+$ dslint abcdefg1234567890 "Foo"
 ```
 
 ## JavaScript API
@@ -37,7 +50,12 @@ const rulesPaths = [
   path.resolve(__dirname, './rules'),
 ];
 
-dslint(fileKey, token, rulesPaths).then(failures => {
+// Optional configuration
+const config = {
+  matchName: 'Foo', // lints against a specific node and it's children
+};
+
+dslint(fileKey, token, rulesPaths, config).then(failures => {
   console.log(failures);
 });
 ```
