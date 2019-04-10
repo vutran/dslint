@@ -1,41 +1,45 @@
 import {getAllRules} from './utils';
 import {Client, getLocalStyles} from './toolkits/figma';
+import {DocumentWalker} from './base/walker';
 
 function isParentNode(node: Figma.Mixins.Children) {
   return node.hasOwnProperty('children');
 }
 
-function lint({
-  client,
-  file,
-  localStyles,
-  rules,
-}: DSLint.LintOptions): DSLint.Rules.Failure[] {
-  return lintNode(file.document, {client, file, localStyles, rules});
+function lint(options: DSLint.LintOptions): DSLint.Rules.Failure[] {
+  const rulesToApply = options.rules.map(
+    ([ruleName, ctor]) => new ctor({ruleName})
+  );
+  return lintNode(options.file.document, rulesToApply, options);
 }
 
 function lintNode<T extends Figma.Node>(
   // The node to lint
   node: T,
+  // Set of rules to apply
+  rules: DSLint.Rules.AbstractRule[],
   // A set of linter options
   options: DSLint.LintOptions
 ): DSLint.Rules.Failure[] {
-  const {file, localStyles, rules} = options;
-  const rulesToApply = rules.map(([ruleName, ctor]) => new ctor({ruleName}));
+  const {file, localStyles} = options;
   let failures: DSLint.Rules.Failure[] = [];
 
-  // Iterate through all rules and apply it to the given node.
-  rulesToApply.forEach(rule => {
-    failures = failures.concat(rule.apply(node, file, localStyles));
-  });
+  const walker = new DocumentWalker(node, {rules, file, localStyles});
+  walker.walk(node);
+  return walker.getAllFailures();
 
-  if (isParentNode(node)) {
-    (<Figma.Mixins.Children>node).children.forEach(child => {
-      failures = failures.concat(lintNode(child, options));
-    });
-  }
+  //// Iterate through all rules and apply it to the given node.
+  //rules.forEach(rule => {
+  //failures = failures.concat(rule.apply(node, file, localStyles));
+  //});
 
-  return failures;
+  //if (isParentNode(node)) {
+  //(<Figma.Mixins.Children>node).children.forEach(child => {
+  //failures = failures.concat(lintNode(child, rules, options));
+  //});
+  //}
+
+  //return failures;
 }
 
 export async function dslint(
@@ -49,8 +53,7 @@ export async function dslint(
     const client = new Client({personalAccessToken});
     const file = (await client.file(fileKey)).body;
     const localStyles = await getLocalStyles(file, client);
-    const allFailures = lint({client, file, localStyles, rules});
-    return allFailures;
+    return lint({client, file, localStyles, rules});
   } catch (err) {
     console.trace(err);
   }

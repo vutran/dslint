@@ -1,11 +1,11 @@
 import {AbstractWalker} from './';
 
-export abstract class RuleWalker extends AbstractWalker
+export abstract class RuleWalker<T = {}> extends AbstractWalker
   implements DSLint.RuleWalker {
-  options: DSLint.RuleWalkerOptions;
+  options: T & DSLint.RuleWalkerOptions;
   failures: DSLint.Rules.Failure[];
 
-  constructor(node: Figma.Node, options?: DSLint.RuleWalkerOptions) {
+  constructor(node: Figma.Node, options?: T & DSLint.RuleWalkerOptions) {
     super(node, options);
     this.failures = [];
   }

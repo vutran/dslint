@@ -1,17 +1,26 @@
 import {AbstractRule} from '../base/rule';
+import {RuleWalker} from '../base/walker';
 
 /**
  * Ensures there are no duplicate named components.
  */
 export class Rule extends AbstractRule {
+  apply(node: Figma.Node, file: Figma.File) {
+    const ruleName = this.getRuleName();
+    return this.applyWithWalker(new ComponentWalker(node, {ruleName, file}));
+  }
+}
+
+interface ComponentWalkerOptions {
+  file: Figma.File;
+}
+
+class ComponentWalker extends RuleWalker<ComponentWalkerOptions> {
   // Map of component name -> list of tuples (component name, and id)
   count: Map<string, [string, Figma.ComponentId][]>;
 
-  apply(node: Figma.Node, file: Figma.File) {
-    if (node.type !== 'DOCUMENT') {
-      return [];
-    }
-
+  visitComponent(node: Figma.Nodes.Component) {
+    const {file} = this.options;
     this.count = new Map();
 
     Object.entries(file.components).forEach(([cId, c]) => {
@@ -31,6 +40,5 @@ export class Rule extends AbstractRule {
         });
       }
     });
-    return this.getAllFailures();
   }
 }

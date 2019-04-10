@@ -1,5 +1,6 @@
 import nearestColor from 'nearest-color';
 import {AbstractRule} from '../base/rule';
+import {RuleWalker} from '../base/walker';
 import {
   isInlineFill,
   isInlineStroke,
@@ -12,6 +13,23 @@ import {
  * Prefer Local Styles over hard-coded styles (fills, strokes, and effects).
  */
 export class Rule extends AbstractRule {
+  apply(
+    node: Figma.Node,
+    file: Figma.File,
+    localStyles: Figma.LocalStyles
+  ): DSLint.Rules.Failure[] {
+    const ruleName = this.getRuleName();
+    return this.applyWithWalker(
+      new LocalStyleWalker(node, {ruleName, localStyles})
+    );
+  }
+}
+
+interface LocalStyleWalkerOptions {
+  localStyles: Figma.LocalStyles;
+}
+
+class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
   /**
    * Given the set of text style, find the nearest font style.
    * This is done by comparing all values and returning the local style with the most matches.
@@ -133,12 +151,8 @@ export class Rule extends AbstractRule {
     return colors;
   }
 
-  apply(
-    node: Figma.Node,
-    file: Figma.File,
-    localStyles: Figma.LocalStyles
-  ): DSLint.Rules.Failure[] {
-    const ruleName = this.getRuleName();
+  visit(node: Figma.Node & Figma.Mixins.Children) {
+    const {ruleName, localStyles} = this.options;
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       if (isInlineFill(node)) {
         // type: nearest-color.Color
@@ -208,6 +222,5 @@ export class Rule extends AbstractRule {
         });
       }
     }
-    return this.getAllFailures();
   }
 }
