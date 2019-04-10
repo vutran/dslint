@@ -153,6 +153,7 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
 
   visit(node: Figma.Node & Figma.Mixins.Children) {
     const {ruleName, localStyles} = this.options;
+
     if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
       if (isInlineFill(node)) {
         // type: nearest-color.Color

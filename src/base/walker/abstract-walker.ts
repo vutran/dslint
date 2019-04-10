@@ -7,11 +7,11 @@ export abstract class AbstractWalker implements DSLint.Walker {
     this.options = options;
   }
 
-  getNode() {
+  public getNode() {
     return this.node;
   }
 
-  visit(node: Figma.Node) {
+  public visit(node: Figma.Node) {
     switch (node.type) {
       case 'DOCUMENT':
         this.visitDocument(node);
@@ -58,67 +58,67 @@ export abstract class AbstractWalker implements DSLint.Walker {
     }
   }
 
-  visitDocument(node: Figma.Nodes.Document) {
+  public visitDocument(node: Figma.Nodes.Document) {
     this.walkChildren(node);
   }
 
-  visitCanvas(node: Figma.Nodes.Canvas) {
+  public visitCanvas(node: Figma.Nodes.Canvas) {
     this.walkChildren(node);
   }
 
-  visitFrame(node: Figma.Nodes.Frame) {
+  public visitFrame(node: Figma.Nodes.Frame) {
     this.walkChildren(node);
   }
 
-  visitGroup(node: Figma.Nodes.Group) {
+  public visitGroup(node: Figma.Nodes.Group) {
     this.walkChildren(node);
   }
 
-  visitBooleanOperation(node: Figma.Nodes.BooleanOperation) {
+  public visitBooleanOperation(node: Figma.Nodes.BooleanOperation) {
     this.walkChildren(node);
   }
 
-  visitStar(node: Figma.Nodes.Star) {
+  public visitStar(node: Figma.Nodes.Star) {
     this.walkChildren(node);
   }
 
-  visitLine(node: Figma.Nodes.Line) {
+  public visitLine(node: Figma.Nodes.Line) {
     this.walkChildren(node);
   }
 
-  visitEllipse(node: Figma.Nodes.Ellipse) {
+  public visitEllipse(node: Figma.Nodes.Ellipse) {
     this.walkChildren(node);
   }
 
-  visitRegularPolygon(node: Figma.Nodes.RegularPolygon) {
+  public visitRegularPolygon(node: Figma.Nodes.RegularPolygon) {
     this.walkChildren(node);
   }
 
-  visitRectangle(node: Figma.Nodes.Rectangle) {
+  public visitRectangle(node: Figma.Nodes.Rectangle) {
     this.walkChildren(node);
   }
 
-  visitText(node: Figma.Nodes.Text) {
+  public visitText(node: Figma.Nodes.Text) {
     this.walkChildren(node);
   }
 
-  visitSlice(node: Figma.Nodes.Slice) {
+  public visitSlice(node: Figma.Nodes.Slice) {
     this.walkChildren(node);
   }
 
-  visitComponent(node: Figma.Nodes.Component) {
+  public visitComponent(node: Figma.Nodes.Component) {
     this.walkChildren(node);
   }
 
-  visitInstance(node: Figma.Nodes.Component) {
+  public visitInstance(node: Figma.Nodes.Component) {
     this.walkChildren(node);
   }
 
-  walk(node: Figma.Node) {
+  public walk(node: Figma.Node) {
     this.visit(node);
   }
 
-  walkChildren(node: Figma.Node & Figma.Mixins.Children) {
+  public walkChildren(node: Figma.Node & Figma.Mixins.Children) {
     if (node.children) {
       node.children.forEach(child => {
         this.visit(child);

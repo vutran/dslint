@@ -2,44 +2,19 @@ import {getAllRules} from './utils';
 import {Client, getLocalStyles} from './toolkits/figma';
 import {DocumentWalker} from './base/walker';
 
-function isParentNode(node: Figma.Mixins.Children) {
-  return node.hasOwnProperty('children');
-}
-
 function lint(options: DSLint.LintOptions): DSLint.Rules.Failure[] {
+  const {file, rules, localStyles} = options;
   const rulesToApply = options.rules.map(
     ([ruleName, ctor]) => new ctor({ruleName})
   );
-  return lintNode(options.file.document, rulesToApply, options);
-}
 
-function lintNode<T extends Figma.Node>(
-  // The node to lint
-  node: T,
-  // Set of rules to apply
-  rules: DSLint.Rules.AbstractRule[],
-  // A set of linter options
-  options: DSLint.LintOptions
-): DSLint.Rules.Failure[] {
-  const {file, localStyles} = options;
-  let failures: DSLint.Rules.Failure[] = [];
-
-  const walker = new DocumentWalker(node, {rules, file, localStyles});
-  walker.walk(node);
+  const walker = new DocumentWalker(file.document, {
+    rules: rulesToApply,
+    file,
+    localStyles,
+  });
+  walker.walk(file.document);
   return walker.getAllFailures();
-
-  //// Iterate through all rules and apply it to the given node.
-  //rules.forEach(rule => {
-  //failures = failures.concat(rule.apply(node, file, localStyles));
-  //});
-
-  //if (isParentNode(node)) {
-  //(<Figma.Mixins.Children>node).children.forEach(child => {
-  //failures = failures.concat(lintNode(child, rules, options));
-  //});
-  //}
-
-  //return failures;
 }
 
 export async function dslint(

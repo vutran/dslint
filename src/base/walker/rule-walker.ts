@@ -10,15 +10,15 @@ export abstract class RuleWalker<T = {}> extends AbstractWalker
     this.failures = [];
   }
 
-  addFailure(failure: DSLint.Rules.Failure) {
-    this.failures.push(failure);
-  }
-
-  getRuleName() {
+  public getRuleName() {
     return this.options.ruleName;
   }
 
-  getAllFailures() {
+  public addFailure(failure: DSLint.Rules.Failure) {
+    this.failures.push(failure);
+  }
+
+  public getAllFailures() {
     return this.failures;
   }
 }

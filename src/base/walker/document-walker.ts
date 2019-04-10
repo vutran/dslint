@@ -13,15 +13,15 @@ export class DocumentWalker extends AbstractWalker
     this.failures = [];
   }
 
-  addFailure(failure: DSLint.Rules.Failure) {
+  public addFailure(failure: DSLint.Rules.Failure) {
     this.failures.push(failure);
   }
 
-  getAllFailures() {
+  public getAllFailures() {
     return this.failures;
   }
 
-  visit(node: Figma.Nodes.Document) {
+  public visit(node: Figma.Nodes.Document) {
     const {rules, file, localStyles} = this.options;
     rules.forEach(rule => {
       this.failures = this.failures.concat(
