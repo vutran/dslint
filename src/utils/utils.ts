@@ -8,22 +8,20 @@ export function getCoreRulesPath() {
   return path.resolve(__dirname, '..', 'rules');
 }
 
-export function getAllRules(
-  rulesPaths: string[]
-): DSLint.Rules.NameAndConstructor[] {
-  const rules: DSLint.Rules.NameAndConstructor[] = [];
-  rulesPaths.forEach(p => {
-    const st = fs.statSync(p);
-
+/**
+ * Returns a list of Rules in the given directories
+ */
+export function getAllRules(rulesPaths: string[]): DSLint.Rules.RuleClass[] {
+  return rulesPaths.reduce((acc, next) => {
+    const st = fs.statSync(next);
     if (st.isDirectory) {
-      const rulesFiles = fs.readdirSync(p);
-      rulesFiles.forEach(file => {
-        const f = path.resolve(p, file);
-        const rule = (require(f) as {Rule: DSLint.Rules.Constructor}).Rule;
-        rules.push([path.parse(file).name, rule]);
+      const dirFiles = fs.readdirSync(next);
+      dirFiles.forEach(file => {
+        const f = path.resolve(next, file);
+        const rule = require(f).Rule;
+        acc.push(rule);
       });
     }
-  });
-
-  return rules;
+    return acc;
+  }, []);
 }

@@ -11,7 +11,7 @@ export class Rule extends AbstractRule {
   };
 
   apply(node: Figma.Node, file: Figma.File) {
-    const ruleName = this.getRuleName();
+    const ruleName = Rule.metadata.ruleName;
     return this.applyWithWalker(new ComponentWalker(node, {ruleName, file}));
   }
 }

@@ -7,10 +7,7 @@ declare namespace DSLint {
   }
 
   interface LintOptions {
-    client: Figma.Client.Client;
-    file: Figma.File;
     localStyles: Figma.LocalStyles;
-    rules: DSLint.Rules.NameAndConstructor[];
   }
 
   namespace Rules {
@@ -30,13 +27,14 @@ declare namespace DSLint {
       ruleData?: AnyType;
     }
 
+    // Static properties/methods
     interface Metadata {
       ruleName: string;
       description: string;
     }
 
+    // Instance properties/methods
     interface AbstractRule {
-      getRuleName(): string;
       apply(
         node: Figma.Node,
         file?: Figma.File,
@@ -44,17 +42,10 @@ declare namespace DSLint {
       ): Failure[];
     }
 
-    interface ConstructorOptions {
-      ruleName: string;
-    }
-
-    interface Constructor {
+    interface RuleClass {
       metadata: Metadata;
-      new (options: ConstructorOptions): AbstractRule;
+      new (): AbstractRule;
     }
-
-    // Tuple hold the name of the rule and it's constructor
-    type NameAndConstructor = [string, Constructor];
   }
 
   interface WalkerOptions {}

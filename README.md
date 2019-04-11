@@ -37,6 +37,8 @@ $ dslint abcdefg1234567890 --matchName "Foo"
 
 ## JavaScript API
 
+Linting a file
+
 ```ts
 import {dslint, getCoreRulesPath} from 'dslint';
 
@@ -53,12 +55,29 @@ const rulesPaths = [
 // Optional configuration
 const config = {
   // lints against a specific node and it's children
-  matchName: 'Foo',
+  nodeName: 'Foo',
 };
 
 dslint(fileKey, token, rulesPaths, config).then(failures => {
   console.log(failures);
 });
+```
+
+Linting an object tree
+
+```ts
+import {lint} from 'dslint';
+
+// Figma.File
+const file = { ... };
+
+// DSLint.Rules.AbstractRule[]
+const rules = [ ... ];
+
+// Figma.LocalStyles;
+const localStyles = new Map(...);
+
+const failures = lint(file, rules, localStyles);
 ```
 
 ## Writing a Custom Lint Rule
@@ -72,26 +91,29 @@ DSLint ships with some basic rules you can apply to your design systems. However
 - All rules must implement the `apply()` method that return a list of failures.
 
 ```ts
-import {AbstractRule} from 'dslint';
+import {AbstractRule, RuleWalker} from 'dslint';
 
 /**
  * Simple rule that detects for component nodes.
  */
 export class Rule extends AbstractRule {
-  apply(
-    node: Figma.Node,
-    file: Figma.File,
-    localStyles: Figma.LocalStyles
-  ): DSLint.Rules.Failures[] {
-    if (node.type === 'COMPONENT') {
-      return [
-        {
-          node,
-          message: `Component detected: ${node.name}`,
-        },
-      ];
-    }
-    return [];
+  static metadata = {
+    ruleName: 'my-custom-rule',
+    description: 'Logs when a component is detected.',
+  };
+
+  apply(node: Figma.Node): DSLint.Rules.Failure[] {
+    const ruleName = Rule.metadata.ruleName;
+    return this.applyWithWalker(new ComponentWalker(node, {ruleName}));
+  }
+}
+
+class ComponentWalker extends RuleWalker {
+  visitComponent(node: Figma.Nodes.Component) {
+    this.addFailure({
+      location: node.id,
+      message: `Component detected: ${node.name}`,
+    });
   }
 }
 ```

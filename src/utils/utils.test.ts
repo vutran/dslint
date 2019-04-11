@@ -3,9 +3,10 @@ import {getAllRules} from './';
 
 describe('getAllRules', () => {
   const rulesPath = path.resolve(__dirname, '..', 'rules');
-  const ruleNames = getAllRules([rulesPath]).map(rule => rule[0]);
+  const rules = getAllRules([rulesPath]);
+  const ruleNames = rules.map(rule => rule.metadata.ruleName);
 
-  it('should have the ban-numbers-in-components rule', () => {
+  it('should have the prefer-local-style rule', () => {
     expect(ruleNames).toContain('prefer-local-style');
   });
 });

@@ -14,7 +14,7 @@ export class Rule extends AbstractRule {
   };
 
   apply(node: Figma.Node & Figma.Mixins.Children): DSLint.Rules.Failure[] {
-    const ruleName = this.getRuleName();
+    const ruleName = Rule.metadata.ruleName;
     // Ensure we are only walking if the entry is of a Canvas type
     if (node.type !== 'CANVAS') {
       return [];
