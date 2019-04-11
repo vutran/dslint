@@ -32,7 +32,7 @@ $ dslint abcdefg1234567890
 Lint against a specific node and it's children
 
 ```bash
-$ dslint abcdefg1234567890 --matchName "Foo"
+$ dslint --nodeName "Foo" abcdefg1234567890
 ```
 
 ## JavaScript API

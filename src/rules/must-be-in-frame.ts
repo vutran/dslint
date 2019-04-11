@@ -4,7 +4,7 @@ import {RuleWalker} from '../base/walker';
 /**
  * All drawable nodes must be in a frame.
  *
- * Limitations: Will not work if using `--matchName`, the walker entry point should start at the
+ * Limitations: Will not work if using `--nodeName`, the walker entry point should start at the
  * Canvas level
  */
 export class Rule extends AbstractRule {
