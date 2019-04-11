@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
+import mri from 'mri';
 import {dslint} from './dslint';
 import {getCoreRulesPath} from './utils';
 import {logResults} from './logger';
-
-const [nodeBin, scriptPath, fileKey, ...matchName] = process.argv;
 
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN || '';
 if (!FIGMA_TOKEN) {
@@ -12,10 +11,13 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
+  const argv = process.argv.slice(2);
+  const args = mri(argv);
+  const fileKey = args._.join('');
   const rulesPath = getCoreRulesPath();
   const startTime = Date.now();
   const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath], {
-    matchName: matchName.join(' '),
+    matchName: args.matchName,
   });
   const endTime = Date.now();
   const diffTime = endTime - startTime;

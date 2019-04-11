@@ -24,17 +24,23 @@ export class DocumentWalker extends AbstractWalker
     return this.failures;
   }
 
-  public visit(node: Figma.Nodes.Document) {
-    const {rules, file, localStyles} = this.options;
+  /**
+   * The document walker will travese the entire tree if there's no matching name.
+   * If there's a `config.matchName` is set, the set of rules are applied to the matched
+   * node and it's children via the rule walker so we can avoid walking from the document walker.
+   */
+  public visit(node: Figma.Node) {
     const {matchName} = this.config;
-    rules.forEach(rule => {
-      const shouldApply = !matchName || node.name.includes(matchName);
-      if (shouldApply) {
+    const shouldApply = !matchName || node.name.includes(matchName);
+    if (shouldApply) {
+      const {rules, file, localStyles} = this.options;
+      rules.forEach(rule => {
         this.failures = this.failures.concat(
           rule.apply(node, this.options.file, this.options.localStyles)
         );
-      }
-    });
-    super.visit(node);
+      });
+    } else {
+      super.visit(node);
+    }
   }
 }

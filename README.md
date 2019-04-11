@@ -32,7 +32,7 @@ $ dslint abcdefg1234567890
 Lint against a specific node and it's children
 
 ```bash
-$ dslint abcdefg1234567890 "Foo"
+$ dslint abcdefg1234567890 --matchName "Foo"
 ```
 
 ## JavaScript API
@@ -52,7 +52,8 @@ const rulesPaths = [
 
 // Optional configuration
 const config = {
-  matchName: 'Foo', // lints against a specific node and it's children
+  // lints against a specific node and it's children
+  matchName: 'Foo',
 };
 
 dslint(fileKey, token, rulesPaths, config).then(failures => {

@@ -164,85 +164,88 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
     return msg;
   }
 
-  visit(node: Figma.Node & Figma.Mixins.Children) {
+  checkNode(node: Figma.Node) {
     const {localStyles} = this.options;
+    if (isInlineFill(node)) {
+      // type: nearest-color.Color
+      const rec: DSLint.AnyType = this.findNearestFills(
+        node.fills,
+        localStyles
+      );
 
-    if (node.type !== 'DOCUMENT' && node.type !== 'CANVAS') {
-      if (isInlineFill(node)) {
-        // type: nearest-color.Color
-        const rec: DSLint.AnyType = this.findNearestFills(
-          node.fills,
-          localStyles
-        );
-
-        this.addFailure({
-          location: node.id,
-          node,
-          message: this.createMessage(
-            `Unexpected inline fill for "${node.name}"`,
-            rec
-          ),
-          ruleData: {
-            type: 'fill',
-            rec,
-          },
-        });
-      }
-
-      if (isInlineStroke(node)) {
-        // type: nearest-color.Color
-        const rec: DSLint.AnyType = this.findNearestFills(
-          node.strokes,
-          localStyles
-        );
-
-        this.addFailure({
-          location: node.id,
-          node,
-          message: this.createMessage(
-            `Unexpected inline stroke for "${node.name}"`,
-            rec
-          ),
-          ruleData: {
-            type: 'stroke',
-            rec,
-          },
-        });
-      }
-
-      if (isInlineEffect(node)) {
-        this.addFailure({
-          location: node.id,
-          node,
-          message: this.createMessage(
-            `Unexpected inline effect style for "${node.name}"`
-          ),
-          ruleData: {
-            type: 'effect',
-          },
-        });
-      }
-
-      if (node.type === 'TEXT' && isInlineType(node)) {
-        const rec = this.findNearestTypes(
-          node.style,
-          localStyles as any /* for typecheck */
-        );
-
-        this.addFailure({
-          location: node.id,
-          node,
-          message: this.createMessage(
-            `Unexpected inline text style for "${node.name}"`,
-            rec
-          ),
-          thumbnail: rec && rec.thumbnail_url,
-          ruleData: {
-            type: 'text',
-            rec,
-          },
-        });
-      }
+      this.addFailure({
+        location: node.id,
+        node,
+        message: this.createMessage(
+          `Unexpected inline fill for "${node.name}"`,
+          rec
+        ),
+        ruleData: {
+          type: 'fill',
+          rec,
+        },
+      });
     }
+
+    if (isInlineStroke(node)) {
+      // type: nearest-color.Color
+      const rec: DSLint.AnyType = this.findNearestFills(
+        node.strokes,
+        localStyles
+      );
+
+      this.addFailure({
+        location: node.id,
+        node,
+        message: this.createMessage(
+          `Unexpected inline stroke for "${node.name}"`,
+          rec
+        ),
+        ruleData: {
+          type: 'stroke',
+          rec,
+        },
+      });
+    }
+
+    if (isInlineEffect(node)) {
+      this.addFailure({
+        location: node.id,
+        node,
+        message: this.createMessage(
+          `Unexpected inline effect style for "${node.name}"`
+        ),
+        ruleData: {
+          type: 'effect',
+        },
+      });
+    }
+
+    if (node.type === 'TEXT' && isInlineType(node)) {
+      const {localStyles} = this.options;
+      const rec = this.findNearestTypes(
+        node.style,
+        localStyles as any /* for typecheck */
+      );
+
+      this.addFailure({
+        location: node.id,
+        node,
+        message: this.createMessage(
+          `Unexpected inline text style for "${node.name}"`,
+          rec
+        ),
+        thumbnail: rec && rec.thumbnail_url,
+        ruleData: {
+          type: 'text',
+          rec,
+        },
+      });
+    }
+  }
+
+  public visit(node: Figma.Node) {
+    super.visit(node);
+    this.checkNode(node);
   }
 }

@@ -3,6 +3,9 @@ import {RuleWalker} from '../base/walker';
 
 /**
  * All drawable nodes must be in a frame.
+ *
+ * Limitations: Will not work if using `--matchName`, the walker entry point should start at the
+ * Canvas level
  */
 export class Rule extends AbstractRule {
   static metadata: DSLint.Rules.Metadata = {
@@ -12,17 +15,16 @@ export class Rule extends AbstractRule {
 
   apply(node: Figma.Node & Figma.Mixins.Children): DSLint.Rules.Failure[] {
     const ruleName = this.getRuleName();
+    // Ensure we are only walking if the entry is of a Canvas type
+    if (node.type !== 'CANVAS') {
+      return [];
+    }
     return this.applyWithWalker(new InFrameWalker(node, {ruleName}));
   }
 }
 
 class InFrameWalker extends RuleWalker {
-  visit(node: Figma.Node & Figma.Mixins.Children) {
-    // Ensure we only run this if the walker started at Canvas
-    if (node.type !== 'CANVAS') {
-      return;
-    }
-
+  visitCanvas(node: Figma.Node & Figma.Mixins.Children) {
     node.children.forEach(child => {
       // Assert that non-FRAME children are drawable nodes (vector, text, etc.)
       if (child.type !== 'FRAME') {
