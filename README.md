@@ -2,6 +2,8 @@
 
 > DSLint is an extensible linting tool for designers. Similar to code linting, design linting can be used to find problematic patterns in your design files.
 
+![Figma](./screenshots/screenshot-1.png?raw=true)
+
 ## Install
 
 If you'd like to use the CLI version, you can instally it globally:
