@@ -51,13 +51,13 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
   ): Figma.Metadata.Style {
     // keep track of the best match
     let highestPoint = 0;
-    let highest = null;
+    let highest: Figma.StyleKey = null;
 
     // keep track of the best font size
     let bestFontSizeDist = 0;
     let bestFontSize = 0;
 
-    localStyles.forEach(localStyle => {
+    localStyles.forEach((localStyle, styleId) => {
       if (!localStyle || !localStyle.metadata) {
         return;
       }
@@ -96,7 +96,7 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
       }
       if (points >= highestPoint) {
         highestPoint = points;
-        highest = localStyle.metadata.node_id;
+        highest = styleId;
       }
     });
 
@@ -144,7 +144,7 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
       switch (style.metadata.style_type) {
         case 'FILL':
           const color = style.properties
-            .filter(prop => prop.type === 'SOLID')
+            .filter(prop => (prop as Figma.Property.Paint).type === 'SOLID')
             .map(prop => toRGB(prop.color));
           colors[style.metadata.name] = color[0];
           break;

@@ -53,6 +53,9 @@ declare namespace Figma {
   type StyleId = Identifier;
   type ComponentId = Identifier;
 
+  // A StyleKey is a unique hash for the style. This is to be passed into /style/:key
+  type StyleKey = string;
+
   interface Node {
     id: NodeId;
     name: string;
@@ -83,7 +86,7 @@ declare namespace Figma {
     properties: T;
   }
 
-  type LocalStyles<T = Property.LocalStyle[]> = Map<StyleId, LocalStyleMap<T>>;
+  type LocalStyles<T = Property.LocalStyle[]> = Map<StyleKey, LocalStyleMap<T>>;
 
   /**
    * Collection of mixins for extending nodes
@@ -104,6 +107,10 @@ declare namespace Figma {
 
     interface Effects extends Node {
       effects: Property.Effect[];
+    }
+
+    interface Grid extends Node {
+      layoutGrids: Property.LayoutGrid[];
     }
 
     interface Type extends Node {
@@ -143,7 +150,8 @@ declare namespace Figma {
         Mixins.Styles,
         // Strokes seem to be a aggregate of strokes applied to child nodes and not reflected to the Frame itself
         Mixins.Strokes,
-        Mixins.Effects {
+        Mixins.Effects,
+        Mixins.Grid {
       background: AnyType[];
       // @deprecated
       backgroundColor: AnyType;
@@ -159,7 +167,6 @@ declare namespace Figma {
       size: AnyType;
       relativeTransform: AnyType;
       clipsContent: boolean;
-      layoutGrids: AnyType[];
       isMask: boolean;
     }
 
@@ -373,9 +380,9 @@ declare namespace Figma {
     // Copied from: https://github.com/figma/figma-extension-api/blob/bce0eeb50d751cb5fc54c8f81bb5cf2e622440ef/types/index.d.ts#L145
     type Transform = [[number, number, number], [number, number, number]];
 
-    // NOTE(vutran) - Alias for all possible local style types (color, effect).
+    // NOTE(vutran) - Alias for all possible local style types (color, effect, layout grid).
     // This isn't defined in the docs, just an alias
-    type LocalStyle = Paint | Effect;
+    type LocalStyle = Paint | Effect | LayoutGrid;
   }
 
   namespace Metadata {

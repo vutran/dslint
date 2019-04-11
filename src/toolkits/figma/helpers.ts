@@ -1,11 +1,12 @@
 import {AbstractWalker} from '../../base/walker';
 
-// Fills, strokes, and effects are available regardless if there's a local style applied
+// Fills, strokes, effects, and grids are available regardless if there's a local style applied
 // or not. It can be assumed that the node is using a one-off color if there are inline styles,
 // but no local styles associated.
 type InlineFill = Figma.Mixins.Styles & Figma.Mixins.Fills;
 type InlineStroke = Figma.Mixins.Styles & Figma.Mixins.Strokes;
 type InlineEffect = Figma.Mixins.Styles & Figma.Mixins.Effects;
+type InlineGrid = Figma.Mixins.Styles & Figma.Mixins.Grid;
 
 // It can also be assumed that the node is using a one-off text style if there are inline
 // type styles, but no local styles associated.
@@ -31,6 +32,11 @@ export function hasLocalType(node: Figma.Node): node is InlineType {
   return !!(localStyles && localStyles.text);
 }
 
+export function hasLocalGrid(node: Figma.Node): node is InlineGrid {
+  const localStyles = (node as Figma.Mixins.Styles).styles;
+  return !!(localStyles && localStyles.grid);
+}
+
 /** Returns true if the node has inline fills */
 export function isInlineFill(node: Figma.Node): node is InlineFill {
   const fills = (node as Figma.Mixins.Fills).fills;
@@ -54,6 +60,12 @@ export function isInlineEffect(node: Figma.Node): node is InlineEffect {
 export function isInlineType(node: Figma.Node): node is InlineType {
   const style = (node as Figma.Mixins.Type).style;
   return !hasLocalType(node) && style && Object.keys(style).length > 0;
+}
+
+/** Returns true if the node has inline layout grids */
+export function isInlineGrid(node: Figma.Node): node is InlineGrid {
+  const layoutGrids = (node as Figma.Mixins.Grid).layoutGrids;
+  return !hasLocalGrid(node) && layoutGrids && layoutGrids.length > 0;
 }
 
 export function toRGB(color: Figma.Property.Color) {
@@ -90,6 +102,10 @@ export class LocalStyleWalker extends AbstractWalker {
       this.localStyles.set(node.styles.effect, node.effects);
     }
 
+    if (hasLocalGrid(node)) {
+      this.localStyles.set(node.styles.grid, node.layoutGrids);
+    }
+
     if (hasLocalType(node)) {
       this.localStyles.set(node.styles.text, node.style);
     }
@@ -104,7 +120,7 @@ export class LocalStyleWalker extends AbstractWalker {
  * Fetches all local style for the given file.
  *
  * NOTE(vutran) - Previously tried the /v1/styles/:key endpoint but it doesn't return the
- * proper data (fill/stroke/effect values) for the given style. Instead, we're going to just
+ * proper data (fill/stroke/effect/text values) for the given style. Instead, we're going to just
  * recurse through all nodes in `file` and extract the associated values if a local style
  * is applied.
  */
@@ -112,14 +128,20 @@ export async function getLocalStyles(
   file: Figma.File,
   client: Figma.Client.Client
 ): Promise<Figma.LocalStyles> {
-  // fetch styles metadata from the API
   const metadata = new Map();
-  const keys = Object.values(file.styles).map(style => style.key);
+
+  const styleIdToKey = new Map();
+
+  Object.entries(file.styles).forEach(([key, value]) => {
+    styleIdToKey.set(key, value.key);
+  });
+
+  const keys = Array.from(styleIdToKey.values());
 
   for (const key of keys) {
     try {
       const style = (await client.styles(key)).body.meta;
-      metadata.set(style.node_id, style);
+      metadata.set(key, style);
     } catch (err) {
       console.error(
         `Oops, failed trying to load a style ${key}. Please make sure your file is published.`
@@ -135,8 +157,9 @@ export async function getLocalStyles(
   // builds the local style (metadata + properties) map
   const localStyles = new Map();
   for (const styleId of Array.from(properties.keys())) {
+    const styleKey = styleIdToKey.get(styleId);
     localStyles.set(styleId, {
-      metadata: metadata.get(styleId),
+      metadata: metadata.get(styleKey),
       properties: properties.get(styleId),
     });
   }
