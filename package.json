@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "contrast-ratio": "^1.1.0",
     "got": "^9.6.0",
     "mri": "^1.1.4",
     "nearest-color": "^0.4.4",

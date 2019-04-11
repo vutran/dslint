@@ -95,6 +95,12 @@ declare namespace DSLint {
     addFailure(failure: DSLint.Rules.Failure): void;
     getAllFailures(): DSLint.Rules.Failure[];
   }
+
+  interface Color {
+    r: number;
+    g: number;
+    b: number;
+  }
 }
 
 declare module 'dslint' {

@@ -340,11 +340,7 @@ declare namespace Figma {
       color: Color;
     }
 
-    interface TypeStyle {
-      styles: Type & {
-        fills: Paint[];
-      };
-    }
+    type TypeStyle = Type & Mixins.Fills;
 
     interface Type {
       fontFamily: string;
