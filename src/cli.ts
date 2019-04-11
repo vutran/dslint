@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-import mri from 'mri';
 import {dslint} from './dslint';
-import {getCoreRulesPath} from './utils';
+import {getConfig, getCoreRulesPath} from './utils';
 import {logResults} from './logger';
 
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN || '';
@@ -11,16 +10,18 @@ if (!FIGMA_TOKEN) {
 }
 
 async function main() {
-  const argv = process.argv.slice(2);
-  const args = mri(argv);
-  const config: DSLint.Configuration = {}; // TODO(vutran)
-  const fileKey = args._.join('');
+  const config = getConfig();
   const rulesPath = getCoreRulesPath();
   const startTime = Date.now();
-  const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath], config);
+  const failures = await dslint(
+    config.fileKey,
+    FIGMA_TOKEN,
+    [rulesPath],
+    config
+  );
   const endTime = Date.now();
   const diffTime = endTime - startTime;
-  logResults(fileKey, failures, diffTime);
+  logResults(config.fileKey, failures, diffTime);
 }
 
 main();

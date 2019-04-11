@@ -2,10 +2,14 @@ declare namespace DSLint {
   // Used for tracking `any` type
   type AnyType = any;
 
-  interface Configuration {}
+  interface Configuration {
+    fileKey: string;
+    teamId?: string;
+  }
 
-  interface LintOptions {
-    localStyles: Figma.LocalStyles;
+  interface RuleLoaderOptions {
+    client: Figma.Client.Client;
+    file: Figma.File;
   }
 
   namespace Rules {
@@ -33,11 +37,12 @@ declare namespace DSLint {
 
     // Instance properties/methods
     interface AbstractRule {
-      apply(
+      ruleDidLoad(
         file?: Figma.File,
-        config?: DSLint.Configuration,
-        localStyles?: Figma.LocalStyles
-      ): Failure[];
+        client?: Figma.Client.Client,
+        config?: DSLint.Configuration
+      ): Promise<void> | void;
+      apply(file?: Figma.File, config?: DSLint.Configuration): Failure[];
     }
 
     interface RuleClass {
@@ -78,7 +83,6 @@ declare namespace DSLint {
   interface DocumentRuleWalkerOptions extends WalkerOptions {
     rules: DSLint.Rules.AbstractRule[];
     file: Figma.File;
-    localStyles: Figma.LocalStyles;
   }
 
   interface RuleWalker extends Walker {

@@ -1,13 +1,14 @@
 import nearestColor from 'nearest-color';
-import {AbstractRule} from '../base/rule';
-import {RuleWalker} from '../base/walker';
+import {AbstractRule} from '../../base/rule';
+import {RuleWalker} from '../../base/walker';
+import {toRGB} from '../../toolkits/figma';
 import {
   isInlineFill,
   isInlineStroke,
   isInlineEffect,
   isInlineType,
-  toRGB,
-} from '../toolkits/figma';
+  getLocalStyles,
+} from './helpers';
 
 /**
  * Prefer Local Styles over hard-coded styles (fills, strokes, effects, and text).
@@ -19,12 +20,22 @@ export class Rule extends AbstractRule {
       'Prefer Local Styles over hard-coded styles (fills, strokes, effects, and text).',
   };
 
+  localStyles: Figma.LocalStyles;
+
+  async ruleDidLoad(
+    file: Figma.File,
+    client: Figma.Client.Client,
+    config: DSLint.Configuration
+  ) {
+    this.localStyles = await getLocalStyles(file, client);
+  }
+
   apply(
     file: Figma.File,
-    config: DSLint.Configuration,
-    localStyles: Figma.LocalStyles
+    config: DSLint.Configuration
   ): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;
+    const localStyles = this.localStyles;
     return this.applyWithWalker(
       new LocalStyleWalker(file.document, {ruleName, localStyles})
     );
