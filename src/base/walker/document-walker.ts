@@ -25,14 +25,22 @@ export class DocumentWalker extends AbstractWalker
   }
 
   /**
-   * The document walker will travese the entire tree if there's no matching name.
-   * If there's a `config.matchName` is set, the set of rules are applied to the matched
-   * node and it's children via the rule walker so we can avoid walking from the document walker.
+   * Case-insensitive matching
+   */
+  private matchesName(node: Figma.Node) {
+    const nodeName = this.config.nodeName;
+    return (
+      !nodeName || node.name.toLowerCase().includes(nodeName.toLowerCase())
+    );
+  }
+
+  /**
+   * The DocumentWalker will traverse the entire tree if the node passes any of the matchers.
+   * If there's any matches for the current node, the set of rules are applied to the matched node
+   * and it's children via the RuleWalker so we can avoid walking from the DocumentWalker.
    */
   public visit(node: Figma.Node) {
-    const {matchName} = this.config;
-    const shouldApply = !matchName || node.name.includes(matchName);
-    if (shouldApply) {
+    if (this.matchesName(node)) {
       const {rules, file, localStyles} = this.options;
       rules.forEach(rule => {
         this.failures = this.failures.concat(

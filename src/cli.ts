@@ -17,7 +17,7 @@ async function main() {
   const rulesPath = getCoreRulesPath();
   const startTime = Date.now();
   const failures = await dslint(fileKey, FIGMA_TOKEN, [rulesPath], {
-    matchName: args.matchName,
+    nodeName: args.nodeName,
   });
   const endTime = Date.now();
   const diffTime = endTime - startTime;

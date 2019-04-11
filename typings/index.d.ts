@@ -3,7 +3,7 @@ declare namespace DSLint {
   type AnyType = any;
 
   interface Configuration {
-    matchName: string;
+    nodeName: string;
   }
 
   interface LintOptions {
