@@ -7,6 +7,12 @@
   "bin": {
     "dslint": "./dist/cli.js"
   },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist",
+    "typings"
+  ],
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc --outDir dist --rootDir src",
