@@ -13,13 +13,9 @@ export class Rule extends AbstractRule {
     description: 'All drawable nodes must be in a frame.',
   };
 
-  apply(node: Figma.Node & Figma.Mixins.Children): DSLint.Rules.Failure[] {
+  apply(file: Figma.File): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;
-    // Ensure we are only walking if the entry is of a Canvas type
-    if (node.type !== 'CANVAS') {
-      return [];
-    }
-    return this.applyWithWalker(new InFrameWalker(node, {ruleName}));
+    return this.applyWithWalker(new InFrameWalker(file.document, {ruleName}));
   }
 }
 

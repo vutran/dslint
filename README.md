@@ -104,9 +104,9 @@ export class Rule extends AbstractRule {
     description: 'Logs when a component is detected.',
   };
 
-  apply(node: Figma.Node): DSLint.Rules.Failure[] {
+  apply(file: Figma.File): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;
-    return this.applyWithWalker(new ComponentWalker(node, {ruleName}));
+    return this.applyWithWalker(new ComponentWalker(file.document, {ruleName}));
   }
 }
 

@@ -35,11 +35,7 @@ declare namespace DSLint {
 
     // Instance properties/methods
     interface AbstractRule {
-      apply(
-        node: Figma.Node,
-        file?: Figma.File,
-        localStyles?: Figma.LocalStyles
-      ): Failure[];
+      apply(file?: Figma.File, localStyles?: Figma.LocalStyles): Failure[];
     }
 
     interface RuleClass {
@@ -81,13 +77,6 @@ declare namespace DSLint {
     rules: DSLint.Rules.AbstractRule[];
     file: Figma.File;
     localStyles: Figma.LocalStyles;
-  }
-
-  interface DocumentWalker extends Walker {
-    config: DSLint.Configuration;
-    failures: DSLint.Rules.Failure[];
-    addFailure(failure: DSLint.Rules.Failure): void;
-    getAllFailures(): DSLint.Rules.Failure[];
   }
 
   interface RuleWalker extends Walker {

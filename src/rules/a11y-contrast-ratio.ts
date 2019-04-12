@@ -13,9 +13,9 @@ export class Rule extends AbstractRule {
       'Check if a component complies to the WCAG 2.0 contrast ratio of 4.5:1.',
   };
 
-  apply(node: Figma.Node): DSLint.Rules.Failure[] {
+  apply(file: Figma.File): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;
-    return this.applyWithWalker(new ComponentWalker(node, {ruleName}));
+    return this.applyWithWalker(new ComponentWalker(file.document, {ruleName}));
   }
 }
 
@@ -67,8 +67,7 @@ class ComponentWalker extends RuleWalker {
   }
 
   visitComponent(node: Figma.Nodes.Component) {
-    // Ensure we start over each time we visit a new component since this walker is spawned off
-    // from the DocumentWalker
+    // Ensure we start over each time we visit a new component
     this.bg = [];
     this.fg = [];
     // Calls the super method to walk children to collect child fills before running our checks

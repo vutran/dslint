@@ -10,9 +10,11 @@ export class Rule extends AbstractRule {
     description: 'Disallows duplicate component names.',
   };
 
-  apply(node: Figma.Node, file: Figma.File) {
+  apply(file: Figma.File) {
     const ruleName = Rule.metadata.ruleName;
-    return this.applyWithWalker(new ComponentWalker(node, {ruleName, file}));
+    return this.applyWithWalker(
+      new ComponentWalker(file.document, {ruleName, file})
+    );
   }
 }
 

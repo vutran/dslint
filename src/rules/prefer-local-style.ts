@@ -20,13 +20,12 @@ export class Rule extends AbstractRule {
   };
 
   apply(
-    node: Figma.Node,
     file: Figma.File,
     localStyles: Figma.LocalStyles
   ): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;
     return this.applyWithWalker(
-      new LocalStyleWalker(node, {ruleName, localStyles})
+      new LocalStyleWalker(file.document, {ruleName, localStyles})
     );
   }
 }

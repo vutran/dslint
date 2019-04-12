@@ -1,6 +1,5 @@
 import {getAllRules} from './utils';
 import {Client, getLocalStyles} from './toolkits/figma';
-import {DocumentWalker} from './base/walker';
 
 export function lint(
   file: Figma.File,
@@ -8,15 +7,14 @@ export function lint(
   options: DSLint.LintOptions,
   config?: DSLint.Configuration
 ): DSLint.Rules.Failure[] {
+  let failures: DSLint.Rules.Failure[] = [];
   const {localStyles} = options;
 
-  const walker = new DocumentWalker(
-    file.document,
-    {rules, file, localStyles},
-    config
-  );
-  walker.walk(file.document);
-  return walker.getAllFailures();
+  rules.forEach(rule => {
+    failures = failures.concat(rule.apply(file, options.localStyles));
+  });
+
+  return failures;
 }
 
 export async function dslint(

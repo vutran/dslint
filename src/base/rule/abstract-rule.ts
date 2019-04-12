@@ -1,6 +1,5 @@
 export abstract class AbstractRule implements DSLint.Rules.AbstractRule {
   public abstract apply(
-    node: Figma.Node,
     file: Figma.File,
     localStyles: Figma.LocalStyles
   ): DSLint.Rules.Failure[];
