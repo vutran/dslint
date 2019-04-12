@@ -2,9 +2,7 @@ declare namespace DSLint {
   // Used for tracking `any` type
   type AnyType = any;
 
-  interface Configuration {
-    nodeName: string;
-  }
+  interface Configuration {}
 
   interface LintOptions {
     localStyles: Figma.LocalStyles;
@@ -35,7 +33,11 @@ declare namespace DSLint {
 
     // Instance properties/methods
     interface AbstractRule {
-      apply(file?: Figma.File, localStyles?: Figma.LocalStyles): Failure[];
+      apply(
+        file?: Figma.File,
+        config?: DSLint.Configuration,
+        localStyles?: Figma.LocalStyles
+      ): Failure[];
     }
 
     interface RuleClass {

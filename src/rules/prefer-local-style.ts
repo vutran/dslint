@@ -21,6 +21,7 @@ export class Rule extends AbstractRule {
 
   apply(
     file: Figma.File,
+    config: DSLint.Configuration,
     localStyles: Figma.LocalStyles
   ): DSLint.Rules.Failure[] {
     const ruleName = Rule.metadata.ruleName;

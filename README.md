@@ -31,12 +31,6 @@ Basic usage:
 $ dslint abcdefg1234567890
 ```
 
-Lint against a specific node and it's children
-
-```bash
-$ dslint --nodeName "Foo" abcdefg1234567890
-```
-
 ## JavaScript API
 
 Linting a file
@@ -54,13 +48,7 @@ const rulesPaths = [
   path.resolve(__dirname, './rules'),
 ];
 
-// Optional configuration
-const config = {
-  // lints against a specific node and it's children
-  nodeName: 'Foo',
-};
-
-dslint(fileKey, token, rulesPaths, config).then(failures => {
+dslint(fileKey, token, rulesPaths).then(failures => {
   console.log(failures);
 });
 ```

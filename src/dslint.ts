@@ -11,7 +11,7 @@ export function lint(
   const {localStyles} = options;
 
   rules.forEach(rule => {
-    failures = failures.concat(rule.apply(file, options.localStyles));
+    failures = failures.concat(rule.apply(file, config, options.localStyles));
   });
 
   return failures;

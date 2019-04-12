@@ -59,6 +59,7 @@ class ComponentWalker extends RuleWalker {
         if (!passed) {
           this.addFailure({
             location: node.id,
+            node,
             message: `Contrast ratio does not meet 4.5:1 for "${node.name}"`,
           });
         }
