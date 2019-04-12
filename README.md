@@ -64,10 +64,7 @@ const file = { ... };
 // DSLint.Rules.AbstractRule[]
 const rules = [ ... ];
 
-// Figma.LocalStyles;
-const localStyles = new Map(...);
-
-const failures = lint(file, rules, localStyles);
+const failures = lint(file, rules);
 ```
 
 ## Writing a Custom Lint Rule

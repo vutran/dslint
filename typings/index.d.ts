@@ -39,6 +39,8 @@ declare namespace DSLint {
     interface AbstractRule {
       ruleDidLoad(
         file?: Figma.File,
+        // TODO(vutran) - I think we should avoid passing the client. Trade-off is user provided
+        // client vs. promoting these types of complex rules
         client?: Figma.Client.Client,
         config?: DSLint.Configuration
       ): Promise<void> | void;
@@ -99,6 +101,12 @@ declare namespace DSLint {
 }
 
 declare module 'dslint' {
+  export function lint(
+    file: Figma.File,
+    rules: DSLint.Rules.AbstractRule[],
+    config?: DSLint.Configuration
+  ): DSLint.Rules.Failure[];
+
   export function dslint(
     fileKey: string,
     personalAccessToken: string,
