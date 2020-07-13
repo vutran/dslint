@@ -138,7 +138,7 @@ export async function getLocalStyles(
       const style = (await client.styles(key)).body.meta;
       metadata.set(key, style);
     } catch (err) {
-      console.error(
+      throw new Error(
         `Oops, failed trying to load a style ${key}. Please make sure your file is published.`
       );
     }
