@@ -14,7 +14,10 @@ type InlineType = Figma.Mixins.Styles & Figma.Mixins.Type;
 
 export function hasLocalFill(node: Figma.Node): node is InlineFill {
   const localStyles = (node as Figma.Mixins.Styles).styles;
-  return !!(localStyles && localStyles.fill);
+  return !!(
+    localStyles &&
+    (localStyles.fill || (localStyles.fills && localStyles.fills.length))
+  );
 }
 
 export function hasLocalStroke(node: Figma.Node): node is InlineStroke {

@@ -52,9 +52,9 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
    * This is done by comparing all values and returning the local style with the most matches.
    * Each value is weighted differently: (size (4), family (3), weight (2), line-height (1))
    *
-   * Limitations: There isn't any local style available in the file. While they may be loaded from
-   * an external file, they won't actually be available the the API response until it is
-   * referenced somewhere.
+   * Limitations: There isn't any local style available in the file by default. If no nodes
+   * are referencing any local styles, there will be no recommendations. At least 1 node needs to
+   * be referencing a local style to ensure we can properly load the rest.
    */
   findNearestTypes(
     style: Figma.Property.Type,
@@ -117,9 +117,9 @@ class LocalStyleWalker extends RuleWalker<LocalStyleWalkerOptions> {
   /**
    * Given the list of paints, find the nearest local style.
    *
-   * Limitations: There isn't any local style available in the file. While they may be loaded from
-   * an external file, they won't actually be available the the API response until it is
-   * referenced somewhere.
+   * Limitations: There isn't any local style available in the file by default. If no nodes
+   * are referencing any local styles, there will be no recommendations. At least 1 node needs to
+   * be referencing a local style to ensure we can properly load the rest.
    */
   findNearestFills(
     paints: Figma.Property.Paint[],

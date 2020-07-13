@@ -52,9 +52,9 @@
     ]
   },
   "dependencies": {
-    "chalk": "^2.4.2",
     "contrast-ratio": "^1.1.0",
     "got": "^9.6.0",
+    "kleur": "^4.0.2",
     "mri": "^1.1.4",
     "nearest-color": "^0.4.4",
     "wcwidth": "^1.0.1"

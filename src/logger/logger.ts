@@ -1,13 +1,13 @@
-import chalk from 'chalk';
+import kleur from 'kleur';
 import wcwidth from 'wcwidth';
 
 const COLUMN_PADDING = 3;
 
 export function logError(fileKey: string, failure: DSLint.Rules.Failure) {
   console.error(
-    chalk.gray(failure.location),
+    kleur.gray(failure.location),
     failure.message,
-    chalk.gray(failure.ruleName)
+    kleur.gray(failure.ruleName)
   );
 }
 
@@ -28,8 +28,8 @@ export function logResults(
       }))
       .forEach(f => logError(fileKey, f));
     console.error('');
-    console.error(`${chalk.red(`Total errors: ${failures.length}`)}`);
-    console.error(`${chalk.red(`Time spent: ${timeSpent / 1000}s`)}`);
+    console.error(`${kleur.red(`Total errors: ${failures.length}`)}`);
+    console.error(`${kleur.red(`Time spent: ${timeSpent / 1000}s`)}`);
   } else {
     console.error('');
     console.log('No errors.');

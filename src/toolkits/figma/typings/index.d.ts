@@ -123,6 +123,7 @@ declare namespace Figma {
         background?: StyleId;
         effect?: StyleId;
         fill?: StyleId;
+        fills?: StyleId;
         grid?: StyleId;
         stroke?: StyleId;
         text?: StyleId;
